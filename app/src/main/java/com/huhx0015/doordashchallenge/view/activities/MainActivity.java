@@ -31,6 +31,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mActivityMainBinding.unbind();
+        mAppBarMainBinding.unbind();
+        mContentMainBinding.unbind();
+    }
+
+    @Override
     public void onBackPressed() {
         if (mActivityMainBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             mActivityMainBinding.drawerLayout.closeDrawer(GravityCompat.START);

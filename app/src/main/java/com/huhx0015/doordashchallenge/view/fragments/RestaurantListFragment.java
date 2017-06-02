@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.huhx0015.doordashchallenge.R;
 import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
 import com.huhx0015.doordashchallenge.databinding.FragmentRestaurantListBinding;
+import com.huhx0015.doordashchallenge.view.adapters.RestaurantListAdapter;
 
 /**
  * Created by Michael Yoon Huh on 6/1/2017.
@@ -31,6 +32,7 @@ public class RestaurantListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mBinding.unbind();
     }
 
     private void initView() {
@@ -47,8 +49,8 @@ public class RestaurantListFragment extends Fragment {
         mBinding.fragmentRestaurantRecyclerView.setDrawingCacheEnabled(true);
         mBinding.fragmentRestaurantRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
-//        RestaurantListAdapter adapter = new RestaurantListAdapter();
-//        adapter.setHasStableIds(true);
-//        mBinding.fragmentRestaurantRecyclerView.setAdapter(adapter);
+        //RestaurantListAdapter adapter = new RestaurantListAdapter(null);
+        //adapter.setHasStableIds(true);
+        //mBinding.fragmentRestaurantRecyclerView.setAdapter(adapter);
     }
 }
