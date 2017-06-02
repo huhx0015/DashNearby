@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import com.huhx0015.doordashchallenge.R;
 import com.huhx0015.doordashchallenge.databinding.AdapterRestaurantListBinding;
-import com.huhx0015.doordashchallenge.models.RestaurantList;
+import com.huhx0015.doordashchallenge.models.Restaurant;
 import com.huhx0015.doordashchallenge.viewmodels.RestaurantListAdapterViewModel;
 import java.util.List;
 
@@ -16,10 +16,10 @@ import java.util.List;
 
 public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.RestaurantListViewHolder> {
 
-    private List<RestaurantList> mRestaurantList;
+    private List<Restaurant> mRestaurant;
 
-    public RestaurantListAdapter(List<RestaurantList> restaurantList) {
-        this.mRestaurantList = restaurantList;
+    public RestaurantListAdapter(List<Restaurant> restaurant) {
+        this.mRestaurant = restaurant;
     }
 
     @Override
@@ -31,23 +31,23 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     @Override
     public void onBindViewHolder(RestaurantListAdapter.RestaurantListViewHolder holder, int position) {
-        String imageUrl = mRestaurantList.get(position).getUrl();
-        String name = mRestaurantList.get(position).getName();
+        String imageUrl = mRestaurant.get(position).getUrl();
+        String name = mRestaurant.get(position).getName();
         String tags = "";
-        String status = mRestaurantList.get(position).getStatus();
+        String status = mRestaurant.get(position).getStatus();
 
-        List<String> tagList = mRestaurantList.get(position).getTags();
+        List<String> tagList = mRestaurant.get(position).getTags();
         if (tagList != null && tagList.size() > 0) {
             StringBuilder tagBuilder = new StringBuilder();
 
             int count = 0;
             for (String tag : tagList) {
                 tagBuilder.append(tag);
-
                 if (count < tagList.size()) {
                     tagBuilder.append(", ");
                 }
             }
+
             tags = tagBuilder.toString();
         }
 
@@ -69,8 +69,8 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     @Override
     public int getItemCount() {
-        if (mRestaurantList != null) {
-            return mRestaurantList.size();
+        if (mRestaurant != null) {
+            return mRestaurant.size();
         } else {
             return 0;
         }

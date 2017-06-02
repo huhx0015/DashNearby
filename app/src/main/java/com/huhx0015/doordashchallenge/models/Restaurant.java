@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
  * Auto-generated model with jsonschema2pojo: http://www.jsonschema2pojo.org/
  */
 
-public class RestaurantList {
+public class Restaurant {
 
     @SerializedName("is_time_surging")
     @Expose
