@@ -6,6 +6,8 @@
 
     <color name="colorDrawer">#ec4f48</color>
 
+    <color name="colorIcon">#6a6a6a</color>
+
     <color name="textGrey">#7e7e7e</color>
     <color name="textGreen">#4CAF50</color>
     <color name="dividerGrey">#d1d1d1</color>

@@ -7,6 +7,9 @@
     <string name="title_favorites">Favorites</string>
     <string name="title_doordash">DoorDash</string>
 
+    <string name="menu_discover">Discover</string>
+    <string name="menu_favorites">Favorites</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
