@@ -44,7 +44,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     private RestaurantDetail mRestaurantDetail;
     private boolean mIsFavorite;
     private int mRestaurantId;
-    private long mDatabaseId;
+    private long mDatabaseId = INVALID_ID;
     private String mRestaurantName;
 
     @Inject
@@ -61,12 +61,12 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
             mRestaurantDetail = savedInstanceState.getParcelable(BUNDLE_RESTAURANT_DETAILS);
             mIsFavorite = savedInstanceState.getBoolean(BUNDLE_IS_FAVORITE);
             mDatabaseId = savedInstanceState.getLong(BUNDLE_DATABASE_ID);
+            mViewModel.setIsFavorite(mIsFavorite, this);
         } else {
             mRestaurantId = getIntent().getIntExtra(BUNDLE_RESTAURANT_ID, INVALID_ID);
             mRestaurantName = getIntent().getStringExtra(BUNDLE_RESTAURANT_NAME);
             mRestaurantDetail = getIntent().getParcelableExtra(BUNDLE_RESTAURANT_DETAILS);
             mIsFavorite = checkFavorite();
-            mDatabaseId = INVALID_ID;
         }
 
         initView();

@@ -13,7 +13,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="restaurant_list_error">Could not retrieve any restaurants.</string>
+    <string name="restaurant_list_error">No restaurants found.</string>
 
     <string name="restaurant_details_add_button">Add to Favorites</string>
     <string name="restaurant_details_remove_button">Remove from Favorites</string>

@@ -14,7 +14,9 @@ import com.huhx0015.doordashchallenge.api.RetrofitInterface;
 import com.huhx0015.doordashchallenge.application.RestaurantApplication;
 import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
 import com.huhx0015.doordashchallenge.databinding.FragmentRestaurantListBinding;
+import com.huhx0015.doordashchallenge.entities.FavoriteRestaurant;
 import com.huhx0015.doordashchallenge.models.Restaurant;
+import com.huhx0015.doordashchallenge.utils.RestaurantUtils;
 import com.huhx0015.doordashchallenge.view.adapters.RestaurantListAdapter;
 import com.huhx0015.doordashchallenge.view.decorators.ListDividerItemDecoration;
 import com.huhx0015.doordashchallenge.viewmodels.RestaurantListViewModel;
@@ -28,6 +30,9 @@ import retrofit2.Retrofit;
 
 /**
  * Created by Michael Yoon Huh on 6/1/2017.
+ *
+ *  TODO: Sugar ORM is not compatible with Instant Run! Instant Run must be disabled first.
+ *  SEE HERE: https://stackoverflow.com/questions/33031570/android-sugar-orm-no-such-table-exception
  */
 
 public class RestaurantListFragment extends Fragment {
@@ -36,6 +41,7 @@ public class RestaurantListFragment extends Fragment {
 
     private static final String INSTANCE_RESTAURANT_LIST = LOG_TAG + "_INSTANCE_RESTAURANT_LIST";
     private static final String INSTANCE_TAG = LOG_TAG + "_INSTANCE_TAG";
+    private static final String TAG_FAVORITES = "TAG_FAVORITES";
 
     private FragmentRestaurantListBinding mBinding;
     private List<Restaurant> mRestaurantList;
@@ -86,6 +92,14 @@ public class RestaurantListFragment extends Fragment {
         mBinding.unbind();
     }
 
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser && mTag.equals(TAG_FAVORITES) && mRestaurantList != null) {
+//            filterList();
+//        }
+//    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -122,6 +136,16 @@ public class RestaurantListFragment extends Fragment {
         mBinding.fragmentRestaurantRecyclerView.setAdapter(adapter);
     }
 
+    private void filterList() {
+        // TODO: Sugar ORM is not compatible with Instant Run! Instant Run must be disabled first.
+        List<FavoriteRestaurant> favoriteRestaurantList = FavoriteRestaurant.listAll(FavoriteRestaurant.class);
+        if (favoriteRestaurantList != null && favoriteRestaurantList.size() > 0) {
+            mRestaurantList = RestaurantUtils.filterRestaurantList(mRestaurantList, favoriteRestaurantList);
+        } else {
+            mRestaurantList.clear();
+        }
+    }
+
     private void queryRestaurantList() {
         RetrofitInterface restaurantListRequest = mRetrofit.create(RetrofitInterface.class);
         Call<List<Restaurant>> call = restaurantListRequest.getRestaurantList(
@@ -134,6 +158,10 @@ public class RestaurantListFragment extends Fragment {
             public void onResponse(Call<List<Restaurant>> call, Response<List<Restaurant>> response) {
                 mViewModel.setProgressBarVisible(false);
                 mRestaurantList = response.body();
+
+                if (mTag.equals(TAG_FAVORITES)) {
+                    filterList();
+                }
 
                 if (mRestaurantList != null && mRestaurantList.size() > 0) {
                     setRecyclerView();

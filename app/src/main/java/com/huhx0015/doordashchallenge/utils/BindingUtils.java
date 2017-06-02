@@ -15,7 +15,7 @@ public class BindingUtils {
     public static void loadImage(AppCompatImageView view, String imageUrl) {
         Picasso.with(view.getContext())
                 .load(imageUrl)
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.drawable.ic_store_mall_directory_black_24dp)
                 .into(view);
     }
 }
