@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.view.MenuItem;
 import com.huhx0015.doordashchallenge.R;
 import com.huhx0015.doordashchallenge.databinding.ActivityMainBinding;
@@ -23,6 +22,9 @@ import com.huhx0015.doordashchallenge.view.fragments.RestaurantListFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String INSTANCE_FRAGMENT_TAG = LOG_TAG + "_INSTANCE_FRAGMENT_TAG";
+
     private ActivityMainBinding mActivityMainBinding;
     private AppBarMainBinding mAppBarMainBinding;
     private ContentMainBinding mContentMainBinding;
@@ -35,7 +37,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initBinding();
         initView();
 
-        loadFragment(RestaurantListFragment.newInstance(), RestaurantListFragment.class.getSimpleName());
+        if (savedInstanceState != null) {
+            mFragmentTag = savedInstanceState.getString(INSTANCE_FRAGMENT_TAG);
+        } else {
+            loadFragment(RestaurantListFragment.newInstance(), RestaurantListFragment.class.getSimpleName());
+        }
     }
 
     @Override
@@ -47,29 +53,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(INSTANCE_FRAGMENT_TAG, mFragmentTag);
+    }
+
+    @Override
     public void onBackPressed() {
         if (mActivityMainBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             mActivityMainBinding.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

@@ -18,6 +18,8 @@ import com.huhx0015.doordashchallenge.models.Restaurant;
 import com.huhx0015.doordashchallenge.view.adapters.RestaurantListAdapter;
 import com.huhx0015.doordashchallenge.view.decorators.ListDividerItemDecoration;
 import com.huhx0015.doordashchallenge.viewmodels.RestaurantListViewModel;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit2.Call;
@@ -32,6 +34,8 @@ import retrofit2.Retrofit;
 public class RestaurantListFragment extends Fragment {
 
     private static final String LOG_TAG = RestaurantListFragment.class.getSimpleName();
+
+    private static final String INSTANCE_RESTAURANT_LIST = LOG_TAG + "_INSTANCE_RESTAURANT_LIST";
 
     private FragmentRestaurantListBinding mBinding;
     private List<Restaurant> mRestaurantList;
@@ -55,24 +59,40 @@ public class RestaurantListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(getActivity().getLayoutInflater(), R.layout.fragment_restaurant_list, null, false);
-        mViewModel = new RestaurantListViewModel();
-        mBinding.setViewModel(mViewModel);
+        initBinding();
         initView();
+
+        if (savedInstanceState != null) {
+            mRestaurantList = savedInstanceState.getParcelableArrayList(INSTANCE_RESTAURANT_LIST);
+
+            if (mRestaurantList != null && mRestaurantList.size() > 0) {
+                setRecyclerView();
+            } else {
+                queryRestaurantList();
+            }
+        } else {
+            queryRestaurantList();
+        }
+
         return mBinding.getRoot();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        queryRestaurantList();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mBinding.unbind();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(INSTANCE_RESTAURANT_LIST, new ArrayList<>(mRestaurantList));
+    }
+
+    private void initBinding() {
+        mBinding = DataBindingUtil.inflate(getActivity().getLayoutInflater(), R.layout.fragment_restaurant_list, null, false);
+        mViewModel = new RestaurantListViewModel();
+        mBinding.setViewModel(mViewModel);
     }
 
     private void initView() {
@@ -92,6 +112,7 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void setRecyclerView() {
+        mViewModel.setRestaurantListVisible(true);
         RestaurantListAdapter adapter = new RestaurantListAdapter(mRestaurantList, getContext());
         adapter.setHasStableIds(true);
         mBinding.fragmentRestaurantRecyclerView.setAdapter(adapter);
@@ -112,6 +133,8 @@ public class RestaurantListFragment extends Fragment {
 
                 if (mRestaurantList != null && mRestaurantList.size() > 0) {
                     setRecyclerView();
+                } else {
+                    mViewModel.setErrorVisibility(true);
                 }
 
                 Log.d(LOG_TAG, "onResponse(): Restaurant list query response received.");
@@ -120,6 +143,7 @@ public class RestaurantListFragment extends Fragment {
             @Override
             public void onFailure(Call<List<Restaurant>> call, Throwable t) {
                 mViewModel.setProgressBarVisible(false);
+                mViewModel.setErrorVisibility(true);
                 Log.e(LOG_TAG, "ERROR: onFailure(): Restaurant list query failed: " + t.getLocalizedMessage());
             }
         });

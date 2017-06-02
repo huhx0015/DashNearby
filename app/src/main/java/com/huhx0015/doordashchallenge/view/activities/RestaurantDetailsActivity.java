@@ -52,7 +52,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
             mRestaurantDetail = getIntent().getParcelableExtra(BUNDLE_RESTAURANT_DETAILS);
         }
 
-        initActionBar();
+        initView();
 
         if (mRestaurantDetail == null) {
             queryRestaurantDetails();
@@ -89,6 +89,10 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_restaurant_details);
         mViewModel = new RestaurantDetailsViewModel(this);
         mBinding.setViewModel(mViewModel);
+    }
+
+    private void initView() {
+        initActionBar();
     }
 
     private void initActionBar() {
