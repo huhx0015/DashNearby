@@ -1,8 +1,21 @@
 <resources>
-    <string name="app_name">DoorDash Challenge</string>
+    <string name="app_name">Dash Nearby</string>
+
     <string name="action_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
+
+    <string name="title_discover">Discover</string>
+    <string name="title_favorites">Favorites</string>
+    <string name="title_doordash">DoorDash</string>
+
+    <string name="menu_discover">Discover</string>
+    <string name="menu_favorites">Favorites</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="restaurant_list_error">No restaurants found.</string>
+
+    <string name="restaurant_details_add_button">Add to Favorites</string>
+    <string name="restaurant_details_remove_button">Remove from Favorites</string>
+    <string name="restaurant_details_error">Could not load details for this restaurant.</string>
 </resources>

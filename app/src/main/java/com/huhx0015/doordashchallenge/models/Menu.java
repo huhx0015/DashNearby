@@ -1,6 +1,8 @@
 
 package com.huhx0015.doordashchallenge.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
  * Auto-generated model with jsonschema2pojo: http://www.jsonschema2pojo.org/
  */
 
-public class Menu {
+public class Menu implements Parcelable {
 
     @SerializedName("status")
     @Expose
@@ -35,6 +37,27 @@ public class Menu {
     @SerializedName("status_type")
     @Expose
     private String statusType;
+
+    protected Menu(Parcel in) {
+        status = in.readString();
+        subtitle = in.readString();
+        name = in.readString();
+        isCatering = in.readByte() != 0;
+        id = in.readInt();
+        statusType = in.readString();
+    }
+
+    public static final Creator<Menu> CREATOR = new Creator<Menu>() {
+        @Override
+        public Menu createFromParcel(Parcel in) {
+            return new Menu(in);
+        }
+
+        @Override
+        public Menu[] newArray(int size) {
+            return new Menu[size];
+        }
+    };
 
     public String getStatus() {
         return status;
@@ -82,5 +105,20 @@ public class Menu {
 
     public void setStatusType(String statusType) {
         this.statusType = statusType;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(status);
+        dest.writeString(subtitle);
+        dest.writeString(name);
+        dest.writeByte((byte) (isCatering ? 1 : 0));
+        dest.writeInt(id);
+        dest.writeString(statusType);
     }
 }
