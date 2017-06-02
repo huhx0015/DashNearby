@@ -21,7 +21,7 @@ public class RestaurantListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(getActivity().getLayoutInflater(), R.layout.fragment_restaurant_list, null, false);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return mBinding.getRoot();
     }
 
     @Override

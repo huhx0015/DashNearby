@@ -1,5 +1,6 @@
 package com.huhx0015.doordashchallenge;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,16 +13,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.huhx0015.doordashchallenge.databinding.ActivityMainBinding;
+import com.huhx0015.doordashchallenge.databinding.AppBarMainBinding;
+import com.huhx0015.doordashchallenge.databinding.ContentMainBinding;
+import com.huhx0015.doordashchallenge.databinding.NavHeaderMainBinding;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ActivityMainBinding mActivityMainBinding;
+    private AppBarMainBinding mAppBarMainBinding;
+    private ContentMainBinding mContentMainBinding;
+    private NavHeaderMainBinding mNavHeaderMainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        initBinding();
+
+
+
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -97,5 +113,12 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void initBinding() {
+        mActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mAppBarMainBinding = AppBarMainBinding.inflate(getLayoutInflater());
+        mContentMainBinding = ContentMainBinding.inflate(getLayoutInflater());
+        mNavHeaderMainBinding = NavHeaderMainBinding.inflate(getLayoutInflater());
     }
 }
