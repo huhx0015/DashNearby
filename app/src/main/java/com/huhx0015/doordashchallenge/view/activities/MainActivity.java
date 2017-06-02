@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String INSTANCE_FRAGMENT_TAG = LOG_TAG + "_INSTANCE_FRAGMENT_TAG";
+    private static final String TAG_DISCOVER = "TAG_DISCOVER";
+    private static final String TAG_FAVORITES = "TAG_FAVORITES";
 
     private ActivityMainBinding mActivityMainBinding;
     private AppBarMainBinding mAppBarMainBinding;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (savedInstanceState != null) {
             mFragmentTag = savedInstanceState.getString(INSTANCE_FRAGMENT_TAG);
         } else {
-            loadFragment(RestaurantListFragment.newInstance(), RestaurantListFragment.class.getSimpleName());
+            loadFragment(RestaurantListFragment.newInstance(TAG_DISCOVER), TAG_DISCOVER);
         }
     }
 
@@ -75,13 +77,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.nav_discover:
-                if (!mFragmentTag.equals(RestaurantListFragment.class.getSimpleName())) {
-                    loadFragment(RestaurantListFragment.newInstance(), RestaurantListFragment.class.getSimpleName());
+                if (!mFragmentTag.equals(TAG_DISCOVER)) {
+                    loadFragment(RestaurantListFragment.newInstance(TAG_DISCOVER), TAG_DISCOVER);
                 }
                 break;
             case R.id.nav_favorites:
-                if (!mFragmentTag.equals(RestaurantListFragment.class.getSimpleName())) {
-                    loadFragment(RestaurantListFragment.newInstance(), RestaurantListFragment.class.getSimpleName());
+                if (!mFragmentTag.equals(TAG_FAVORITES)) {
+                    loadFragment(RestaurantListFragment.newInstance(TAG_FAVORITES), TAG_FAVORITES);
                 }
                 break;
         }
@@ -122,6 +124,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.mFragmentTag = tag;
 
         FragmentManager fragmentManager = getSupportFragmentManager();
+
+        Fragment existingFragment = fragmentManager.findFragmentByTag(tag);
+        if (existingFragment != null) {
+            fragment = existingFragment;
+        }
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(mContentMainBinding.mainFragmentContainer.getId(), fragment);
         fragmentTransaction.commit();

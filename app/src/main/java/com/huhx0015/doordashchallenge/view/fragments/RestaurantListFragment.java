@@ -18,7 +18,6 @@ import com.huhx0015.doordashchallenge.models.Restaurant;
 import com.huhx0015.doordashchallenge.view.adapters.RestaurantListAdapter;
 import com.huhx0015.doordashchallenge.view.decorators.ListDividerItemDecoration;
 import com.huhx0015.doordashchallenge.viewmodels.RestaurantListViewModel;
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -36,16 +35,19 @@ public class RestaurantListFragment extends Fragment {
     private static final String LOG_TAG = RestaurantListFragment.class.getSimpleName();
 
     private static final String INSTANCE_RESTAURANT_LIST = LOG_TAG + "_INSTANCE_RESTAURANT_LIST";
+    private static final String INSTANCE_TAG = LOG_TAG + "_INSTANCE_TAG";
 
     private FragmentRestaurantListBinding mBinding;
     private List<Restaurant> mRestaurantList;
     private RestaurantListViewModel mViewModel;
+    private String mTag;
 
     @Inject
     Retrofit mRetrofit;
 
-    public static RestaurantListFragment newInstance() {
+    public static RestaurantListFragment newInstance(String tag) {
         RestaurantListFragment fragment = new RestaurantListFragment();
+        fragment.mTag = tag;
         return fragment;
     }
 
@@ -63,6 +65,7 @@ public class RestaurantListFragment extends Fragment {
         initView();
 
         if (savedInstanceState != null) {
+            mTag = savedInstanceState.getString(INSTANCE_TAG);
             mRestaurantList = savedInstanceState.getParcelableArrayList(INSTANCE_RESTAURANT_LIST);
 
             if (mRestaurantList != null && mRestaurantList.size() > 0) {
@@ -86,6 +89,7 @@ public class RestaurantListFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putString(INSTANCE_TAG, mTag);
         outState.putParcelableArrayList(INSTANCE_RESTAURANT_LIST, new ArrayList<>(mRestaurantList));
     }
 
