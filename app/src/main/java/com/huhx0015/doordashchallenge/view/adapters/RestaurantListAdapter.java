@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.huhx0015.doordashchallenge.R;
 import com.huhx0015.doordashchallenge.databinding.AdapterRestaurantListBinding;
 import com.huhx0015.doordashchallenge.models.Restaurant;
+import com.huhx0015.doordashchallenge.utils.TagsUtils;
 import com.huhx0015.doordashchallenge.view.activities.RestaurantDetailsActivity;
 import com.huhx0015.doordashchallenge.viewmodels.RestaurantListAdapterViewModel;
 import java.util.List;
@@ -20,10 +21,10 @@ import java.util.List;
 public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.RestaurantListViewHolder> {
 
     private Context mContext;
-    private List<Restaurant> mRestaurant;
+    private List<Restaurant> mRestaurantList;
 
     public RestaurantListAdapter(List<Restaurant> restaurant, Context context) {
-        this.mRestaurant = restaurant;
+        this.mRestaurantList = restaurant;
         this.mContext = context;
     }
 
@@ -36,30 +37,21 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     @Override
     public void onBindViewHolder(RestaurantListAdapter.RestaurantListViewHolder holder, int position) {
-        String imageUrl = mRestaurant.get(position).getCoverImgUrl();
-        String name = mRestaurant.get(position).getName();
+        final int id = mRestaurantList.get(position).getId();
+        String imageUrl = mRestaurantList.get(position).getCoverImgUrl();
+        String name = mRestaurantList.get(position).getName();
         String tags = "";
-        String status = mRestaurant.get(position).getStatus();
+        String status = mRestaurantList.get(position).getStatus();
 
-        List<String> tagList = mRestaurant.get(position).getTags();
+        List<String> tagList = mRestaurantList.get(position).getTags();
         if (tagList != null && tagList.size() > 0) {
-            StringBuilder tagBuilder = new StringBuilder();
-
-            int count = 0;
-            for (String tag : tagList) {
-                tagBuilder.append(tag);
-                if (count++ < tagList.size() - 1) {
-                    tagBuilder.append(", ");
-                }
-            }
-
-            tags = tagBuilder.toString();
+            tags = TagsUtils.formatTags(tagList);
         }
 
         holder.bindView(imageUrl, name, tags, status, new RestaurantListAdapterViewModel.RestaurantListAdapterViewModelListener() {
             @Override
             public void onRowClicked() {
-                launchRestaurantDetailsIntent();
+                launchRestaurantDetailsIntent(id);
             }
         });
     }
@@ -79,15 +71,16 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     @Override
     public int getItemCount() {
-        if (mRestaurant != null) {
-            return mRestaurant.size();
+        if (mRestaurantList != null) {
+            return mRestaurantList.size();
         } else {
             return 0;
         }
     }
 
-    private void launchRestaurantDetailsIntent() {
+    private void launchRestaurantDetailsIntent(int restaurantId) {
         Intent restaurantDetailsIntent = new Intent(mContext, RestaurantDetailsActivity.class);
+        restaurantDetailsIntent.putExtra(RestaurantDetailsActivity.BUNDLE_RESTAURANT_ID, restaurantId);
         mContext.startActivity(restaurantDetailsIntent);
     }
 

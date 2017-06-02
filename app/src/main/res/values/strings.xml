@@ -7,4 +7,5 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="restaurant_details_button">Add to Favorites</string>
+    <string name="restaurant_details_error">Could not load details for this restaurant.</string>
 </resources>

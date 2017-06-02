@@ -1,64 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View" />
         <variable
             name="viewModel"
             type="com.huhx0015.doordashchallenge.viewmodels.RestaurantDetailsViewModel" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:padding="@dimen/activity_margin"
         tools:context="com.huhx0015.doordashchallenge.view.activities.RestaurantDetailsActivity">
 
-        <android.support.v7.widget.AppCompatImageView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="128dp"
-            android:layout_marginEnd="48dp"
-            android:layout_marginLeft="48dp"
-            android:layout_marginRight="48dp"
-            android:layout_marginStart="48dp"
-            android:scaleType="fitCenter" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="@{viewModel.restaurantDetailsVisible ? View.VISIBLE : View.GONE}" >
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="128dp"
+                android:layout_marginEnd="48dp"
+                android:layout_marginLeft="48dp"
+                android:layout_marginRight="48dp"
+                android:layout_marginStart="48dp"
+                android:scaleType="fitCenter"
+                app:imageUrl="@{viewModel.imageUrl}"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/textGrey"
+                android:text="@{viewModel.tags}" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:textColor="@android:color/black"
+                android:text="@{viewModel.status}"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:text="@{viewModel.price}"
+                android:textColor="@color/textGreen"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:text="@string/restaurant_details_button"
+                android:onClick="@{viewModel.onClickAddFavorite}"/>
+
+        </LinearLayout>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="@{viewModel.progressBarVisible ? View.VISIBLE : View.GONE}" />
 
         <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/textGrey"
-            android:text="Sushi, Teriyaki, Poke" />
-
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/restaurant_details_error"
             android:textColor="@android:color/black"
-            android:text="36 minutes"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:visibility="@{viewModel.errorVisible ? View.VISIBLE : View.GONE}"/>
 
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:text="3.99"
-            android:textColor="@color/textGreen"
-            android:textStyle="bold" />
-
-        <android.support.v7.widget.AppCompatButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="@string/restaurant_details_button" />
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </layout>

@@ -24,7 +24,13 @@
         </activity>
 
         <activity
-            android:name=".view.activities.RestaurantDetailsActivity">
+            android:name=".view.activities.RestaurantDetailsActivity"
+            android:parentActivityName=".view.activities.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.activities.MainActivity" />
+
         </activity>
 
     </application>
