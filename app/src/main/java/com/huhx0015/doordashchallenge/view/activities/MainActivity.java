@@ -3,6 +3,9 @@ package com.huhx0015.doordashchallenge.view.activities;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +15,7 @@ import com.huhx0015.doordashchallenge.R;
 import com.huhx0015.doordashchallenge.databinding.ActivityMainBinding;
 import com.huhx0015.doordashchallenge.databinding.AppBarMainBinding;
 import com.huhx0015.doordashchallenge.databinding.ContentMainBinding;
+import com.huhx0015.doordashchallenge.view.fragments.RestaurantListFragment;
 
 /**
  * Created by Michael Yoon Huh on 6/1/2017.
@@ -23,19 +27,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private AppBarMainBinding mAppBarMainBinding;
     private ContentMainBinding mContentMainBinding;
 
+    private String mFragmentTag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initBinding();
         initView();
+
+        loadFragment(RestaurantListFragment.newInstance(), RestaurantListFragment.class.getSimpleName());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mActivityMainBinding.unbind();
-        mAppBarMainBinding.unbind();
         mContentMainBinding.unbind();
+        mAppBarMainBinding.unbind();
+        mActivityMainBinding.unbind();
     }
 
     @Override
@@ -49,19 +57,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -119,5 +122,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void initNavigationView() {
         mActivityMainBinding.navView.setNavigationItemSelectedListener(this);
+    }
+
+    private void loadFragment(Fragment fragment, String tag) {
+        this.mFragmentTag = tag;
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(mContentMainBinding.mainFragmentContainer.getId(), fragment);
+        fragmentTransaction.commit();
     }
 }

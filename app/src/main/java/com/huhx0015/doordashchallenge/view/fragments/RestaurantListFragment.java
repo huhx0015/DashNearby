@@ -26,6 +26,11 @@ public class RestaurantListFragment extends Fragment {
     @Inject
     Retrofit mRetrofit;
 
+    public static RestaurantListFragment newInstance() {
+        RestaurantListFragment fragment = new RestaurantListFragment();
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
