@@ -1,6 +1,8 @@
 
 package com.huhx0015.doordashchallenge.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -11,7 +13,7 @@ import com.google.gson.annotations.SerializedName;
  * Auto-generated model with jsonschema2pojo: http://www.jsonschema2pojo.org/
  */
 
-public class Restaurant {
+public class Restaurant implements Parcelable {
 
     @SerializedName("is_time_surging")
     @Expose
@@ -136,6 +138,49 @@ public class Restaurant {
     @SerializedName("featured_category_description")
     @Expose
     private Object featuredCategoryDescription;
+
+    protected Restaurant(Parcel in) {
+        isTimeSurging = in.readByte() != 0;
+        deliveryFee = in.readInt();
+        maxCompositeScore = in.readInt();
+        id = in.readInt();
+        averageRating = in.readDouble();
+        menus = in.createTypedArrayList(Menu.CREATOR);
+        compositeScore = in.readInt();
+        statusType = in.readString();
+        isOnlyCatering = in.readByte() != 0;
+        status = in.readString();
+        numberOfRatings = in.readInt();
+        asapTime = in.readInt();
+        description = in.readString();
+        business = in.readParcelable(Business.class.getClassLoader());
+        tags = in.createStringArrayList();
+        yelpReviewCount = in.readInt();
+        businessId = in.readInt();
+        extraSosDeliveryFee = in.readInt();
+        yelpRating = in.readDouble();
+        coverImgUrl = in.readString();
+        headerImgUrl = in.readString();
+        address = in.readParcelable(Address.class.getClassLoader());
+        priceRange = in.readInt();
+        slug = in.readString();
+        name = in.readString();
+        isNewlyAdded = in.readByte() != 0;
+        url = in.readString();
+        serviceRate = in.readDouble();
+    }
+
+    public static final Creator<Restaurant> CREATOR = new Creator<Restaurant>() {
+        @Override
+        public Restaurant createFromParcel(Parcel in) {
+            return new Restaurant(in);
+        }
+
+        @Override
+        public Restaurant[] newArray(int size) {
+            return new Restaurant[size];
+        }
+    };
 
     public boolean isIsTimeSurging() {
         return isTimeSurging;
@@ -385,4 +430,40 @@ public class Restaurant {
         this.featuredCategoryDescription = featuredCategoryDescription;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (isTimeSurging ? 1 : 0));
+        dest.writeInt(deliveryFee);
+        dest.writeInt(maxCompositeScore);
+        dest.writeInt(id);
+        dest.writeDouble(averageRating);
+        dest.writeTypedList(menus);
+        dest.writeInt(compositeScore);
+        dest.writeString(statusType);
+        dest.writeByte((byte) (isOnlyCatering ? 1 : 0));
+        dest.writeString(status);
+        dest.writeInt(numberOfRatings);
+        dest.writeInt(asapTime);
+        dest.writeString(description);
+        dest.writeParcelable(business, flags);
+        dest.writeStringList(tags);
+        dest.writeInt(yelpReviewCount);
+        dest.writeInt(businessId);
+        dest.writeInt(extraSosDeliveryFee);
+        dest.writeDouble(yelpRating);
+        dest.writeString(coverImgUrl);
+        dest.writeString(headerImgUrl);
+        dest.writeParcelable(address, flags);
+        dest.writeInt(priceRange);
+        dest.writeString(slug);
+        dest.writeString(name);
+        dest.writeByte((byte) (isNewlyAdded ? 1 : 0));
+        dest.writeString(url);
+        dest.writeDouble(serviceRate);
+    }
 }

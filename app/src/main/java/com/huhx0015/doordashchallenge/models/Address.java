@@ -1,6 +1,8 @@
 
 package com.huhx0015.doordashchallenge.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
  * Auto-generated model with jsonschema2pojo: http://www.jsonschema2pojo.org/
  */
 
-public class Address {
+public class Address implements Parcelable {
 
     @SerializedName("city")
     @Expose
@@ -55,6 +57,32 @@ public class Address {
     @SerializedName("zip_code")
     @Expose
     private String zipCode;
+
+    protected Address(Parcel in) {
+        city = in.readString();
+        subpremise = in.readString();
+        id = in.readInt();
+        printableAddress = in.readString();
+        state = in.readString();
+        street = in.readString();
+        country = in.readString();
+        lat = in.readDouble();
+        lng = in.readDouble();
+        shortname = in.readString();
+        zipCode = in.readString();
+    }
+
+    public static final Creator<Address> CREATOR = new Creator<Address>() {
+        @Override
+        public Address createFromParcel(Parcel in) {
+            return new Address(in);
+        }
+
+        @Override
+        public Address[] newArray(int size) {
+            return new Address[size];
+        }
+    };
 
     public String getCity() {
         return city;
@@ -142,5 +170,25 @@ public class Address {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(city);
+        dest.writeString(subpremise);
+        dest.writeInt(id);
+        dest.writeString(printableAddress);
+        dest.writeString(state);
+        dest.writeString(street);
+        dest.writeString(country);
+        dest.writeDouble(lat);
+        dest.writeDouble(lng);
+        dest.writeString(shortname);
+        dest.writeString(zipCode);
     }
 }

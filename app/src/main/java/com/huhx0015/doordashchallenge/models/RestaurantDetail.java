@@ -1,6 +1,9 @@
 
 package com.huhx0015.doordashchallenge.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -11,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
  * Auto-generated model with jsonschema2pojo: http://www.jsonschema2pojo.org/
  */
 
-public class RestaurantDetail {
+public class RestaurantDetail implements Parcelable {
 
     @SerializedName("phone_number")
     @Expose
@@ -164,6 +167,55 @@ public class RestaurantDetail {
     @SerializedName("header_image_url")
     @Expose
     private Object headerImageUrl;
+
+    protected RestaurantDetail(Parcel in) {
+        phoneNumber = in.readString();
+        yelpReviewCount = in.readInt();
+        deliveryFee = in.readInt();
+        maxCompositeScore = in.readInt();
+        id = in.readInt();
+        averageRating = in.readDouble();
+        yelpBizId = in.readString();
+        deliveryRadius = in.readInt();
+        inflationRate = in.readDouble();
+        menus = in.createTypedArrayList(Menu.CREATOR);
+        showStoreMenuHeaderPhoto = in.readByte() != 0;
+        compositeScore = in.readInt();
+        numberOfRatings = in.readInt();
+        statusType = in.readString();
+        isOnlyCatering = in.readByte() != 0;
+        status = in.readString();
+        objectType = in.readString();
+        description = in.readString();
+        business = in.readParcelable(Business.class.getClassLoader());
+        tags = in.createStringArrayList();
+        asapTime = in.readInt();
+        yelpRating = in.readDouble();
+        extraSosDeliveryFee = in.readInt();
+        businessId = in.readInt();
+        coverImgUrl = in.readString();
+        address = in.readParcelable(Address.class.getClassLoader());
+        priceRange = in.readInt();
+        slug = in.readString();
+        showSuggestedItems = in.readByte() != 0;
+        name = in.readString();
+        isUpsellEligible = in.readByte() != 0;
+        isNewlyAdded = in.readByte() != 0;
+        isGoodForGroupOrders = in.readByte() != 0;
+        serviceRate = in.readDouble();
+    }
+
+    public static final Creator<RestaurantDetail> CREATOR = new Creator<RestaurantDetail>() {
+        @Override
+        public RestaurantDetail createFromParcel(Parcel in) {
+            return new RestaurantDetail(in);
+        }
+
+        @Override
+        public RestaurantDetail[] newArray(int size) {
+            return new RestaurantDetail[size];
+        }
+    };
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -469,4 +521,46 @@ public class RestaurantDetail {
         this.headerImageUrl = headerImageUrl;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(phoneNumber);
+        dest.writeInt(yelpReviewCount);
+        dest.writeInt(deliveryFee);
+        dest.writeInt(maxCompositeScore);
+        dest.writeInt(id);
+        dest.writeDouble(averageRating);
+        dest.writeString(yelpBizId);
+        dest.writeInt(deliveryRadius);
+        dest.writeDouble(inflationRate);
+        dest.writeTypedList(menus);
+        dest.writeByte((byte) (showStoreMenuHeaderPhoto ? 1 : 0));
+        dest.writeInt(compositeScore);
+        dest.writeInt(numberOfRatings);
+        dest.writeString(statusType);
+        dest.writeByte((byte) (isOnlyCatering ? 1 : 0));
+        dest.writeString(status);
+        dest.writeString(objectType);
+        dest.writeString(description);
+        dest.writeParcelable(business, flags);
+        dest.writeStringList(tags);
+        dest.writeInt(asapTime);
+        dest.writeDouble(yelpRating);
+        dest.writeInt(extraSosDeliveryFee);
+        dest.writeInt(businessId);
+        dest.writeString(coverImgUrl);
+        dest.writeParcelable(address, flags);
+        dest.writeInt(priceRange);
+        dest.writeString(slug);
+        dest.writeByte((byte) (showSuggestedItems ? 1 : 0));
+        dest.writeString(name);
+        dest.writeByte((byte) (isUpsellEligible ? 1 : 0));
+        dest.writeByte((byte) (isNewlyAdded ? 1 : 0));
+        dest.writeByte((byte) (isGoodForGroupOrders ? 1 : 0));
+        dest.writeDouble(serviceRate);
+    }
 }
