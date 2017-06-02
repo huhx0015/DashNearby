@@ -1,4 +1,4 @@
-package com.huhx0015.doordashchallenge;
+package com.huhx0015.doordashchallenge.view.activities;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -8,9 +8,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.huhx0015.doordashchallenge.R;
 import com.huhx0015.doordashchallenge.databinding.ActivityMainBinding;
 import com.huhx0015.doordashchallenge.databinding.AppBarMainBinding;
 import com.huhx0015.doordashchallenge.databinding.ContentMainBinding;
+
+/**
+ * Created by Michael Yoon Huh on 6/1/2017.
+ */
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
