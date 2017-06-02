@@ -168,13 +168,13 @@ public class RestaurantDetail implements Parcelable {
     @Expose
     private Object headerImageUrl;
 
-    public RestaurantDetail(String imageUrl, String name, List<String> tags, String status, int id, double rating) {
+    public RestaurantDetail(String imageUrl, String name, List<String> tags, String status, int id, int fee) {
         this.coverImgUrl = imageUrl;
         this.name = name;
         this.tags = tags;
         this.status = status;
         this.id = id;
-        this.averageRating = rating;
+        this.deliveryFee = fee;
     }
 
     protected RestaurantDetail(Parcel in) {

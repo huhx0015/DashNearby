@@ -20,7 +20,7 @@
 
         <activity
             android:name=".view.activities.MainActivity"
-            android:label="@string/title_discover"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +30,7 @@
 
         <activity
             android:name=".view.activities.RestaurantDetailsActivity"
+            android:label="@string/app_name"
             android:parentActivityName=".view.activities.MainActivity"
             android:theme="@style/AppTheme">
             <meta-data

@@ -44,7 +44,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         final String name = mRestaurantList.get(position).getName();
         String tags = "";
         final String status = mRestaurantList.get(position).getStatus();
-        final double rating = mRestaurantList.get(position).getAverageRating();
+        final int fee = mRestaurantList.get(position).getDeliveryFee();
 
         final List<String> tagList = mRestaurantList.get(position).getTags();
         if (tagList != null && tagList.size() > 0) {
@@ -54,7 +54,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         holder.bindView(imageUrl, name, tags, status, new RestaurantListAdapterViewModel.RestaurantListAdapterViewModelListener() {
             @Override
             public void onRowClicked() {
-                RestaurantDetail details = new RestaurantDetail(imageUrl, name, tagList, status, id, rating);
+                RestaurantDetail details = new RestaurantDetail(imageUrl, name, tagList, status, id, fee);
                 launchRestaurantDetailsIntent(id, name, details);
             }
         });

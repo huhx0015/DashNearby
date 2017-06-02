@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             loadFragment(RestaurantListFragment.newInstance(TAG_DISCOVER), TAG_DISCOVER);
         }
+
+        setToolbarTitle();
     }
 
     @Override
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
+        setToolbarTitle();
         mActivityMainBinding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -118,6 +121,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void initNavigationView() {
         mActivityMainBinding.navView.setNavigationItemSelectedListener(this);
+    }
+
+    private void setToolbarTitle() {
+        switch (mFragmentTag) {
+            case TAG_DISCOVER:
+                mAppBarMainBinding.toolbar.setTitle(R.string.title_discover);
+                break;
+            case TAG_FAVORITES:
+                mAppBarMainBinding.toolbar.setTitle(R.string.title_favorites);
+                break;
+        }
     }
 
     private void loadFragment(Fragment fragment, String tag) {

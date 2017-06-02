@@ -21,7 +21,7 @@ public class RestaurantDetailsViewModel extends BaseObservable {
     private String mImageUrl;
     private String mTags;
     private String mStatus;
-    private String mRating;
+    private String mFee;
     private String mFavoriteButtonText;
 
     public RestaurantDetailsViewModel(RestaurantDetailsViewModelListener listener) {
@@ -58,19 +58,19 @@ public class RestaurantDetailsViewModel extends BaseObservable {
         return mStatus;
     }
 
-    public String getRating() {
-        return mRating;
+    public String getFee() {
+        return mFee;
     }
 
     public String getFavoriteButtonText() {
         return mFavoriteButtonText;
     }
 
-    public void setRestaurantDetails(String image, String tags, String status, String rating) {
+    public void setRestaurantDetails(String image, String tags, String status, String fee) {
         this.mImageUrl = image;
         this.mTags = tags;
         this.mStatus = status;
-        this.mRating = rating;
+        this.mFee = fee;
         notifyChange();
     }
 
