@@ -10,6 +10,8 @@
 
     <color name="colorBackground">#dbdbdb</color>
 
+    <color name="colorPressed">#EF9A9A</color>
+
     <color name="textGrey">#7e7e7e</color>
     <color name="textGreen">#4CAF50</color>
     <color name="dividerGrey">#d1d1d1</color>
