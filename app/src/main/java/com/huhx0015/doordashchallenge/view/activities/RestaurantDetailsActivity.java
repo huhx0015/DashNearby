@@ -43,19 +43,21 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         initBinding();
 
         if (savedInstanceState != null) {
-
+            mRestaurantId = savedInstanceState.getInt(BUNDLE_RESTAURANT_ID, INVALID_RESTAURANT_ID);
+            mRestaurantName = savedInstanceState.getString(BUNDLE_RESTAURANT_NAME);
+            mRestaurantDetail = savedInstanceState.getParcelable(BUNDLE_RESTAURANT_DETAILS);
         } else {
             mRestaurantId = getIntent().getIntExtra(BUNDLE_RESTAURANT_ID, INVALID_RESTAURANT_ID);
             mRestaurantName = getIntent().getStringExtra(BUNDLE_RESTAURANT_NAME);
             mRestaurantDetail = getIntent().getParcelableExtra(BUNDLE_RESTAURANT_DETAILS);
+        }
 
-            initActionBar();
+        initActionBar();
 
-            if (mRestaurantDetail == null) {
-                queryRestaurantDetails();
-            } else {
-                setRestaurantDetails();
-            }
+        if (mRestaurantDetail == null) {
+            queryRestaurantDetails();
+        } else {
+            setRestaurantDetails();
         }
     }
 
@@ -63,6 +65,14 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     protected void onDestroy() {
         super.onDestroy();
         mBinding.unbind();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(BUNDLE_RESTAURANT_ID, mRestaurantId);
+        outState.putString(BUNDLE_RESTAURANT_NAME, mRestaurantName);
+        outState.putParcelable(BUNDLE_RESTAURANT_DETAILS, mRestaurantDetail);
     }
 
     @Override
