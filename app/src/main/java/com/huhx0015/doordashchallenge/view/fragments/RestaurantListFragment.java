@@ -92,7 +92,7 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void setRecyclerView() {
-        RestaurantListAdapter adapter = new RestaurantListAdapter(mRestaurantList);
+        RestaurantListAdapter adapter = new RestaurantListAdapter(mRestaurantList, getContext());
         adapter.setHasStableIds(true);
         mBinding.fragmentRestaurantRecyclerView.setAdapter(adapter);
     }

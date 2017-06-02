@@ -1,5 +1,7 @@
 package com.huhx0015.doordashchallenge.view.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +9,7 @@ import android.view.ViewGroup;
 import com.huhx0015.doordashchallenge.R;
 import com.huhx0015.doordashchallenge.databinding.AdapterRestaurantListBinding;
 import com.huhx0015.doordashchallenge.models.Restaurant;
+import com.huhx0015.doordashchallenge.view.activities.RestaurantDetailsActivity;
 import com.huhx0015.doordashchallenge.viewmodels.RestaurantListAdapterViewModel;
 import java.util.List;
 
@@ -16,10 +19,12 @@ import java.util.List;
 
 public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.RestaurantListViewHolder> {
 
+    private Context mContext;
     private List<Restaurant> mRestaurant;
 
-    public RestaurantListAdapter(List<Restaurant> restaurant) {
+    public RestaurantListAdapter(List<Restaurant> restaurant, Context context) {
         this.mRestaurant = restaurant;
+        this.mContext = context;
     }
 
     @Override
@@ -51,7 +56,12 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
             tags = tagBuilder.toString();
         }
 
-        holder.bindView(imageUrl, name, tags, status);
+        holder.bindView(imageUrl, name, tags, status, new RestaurantListAdapterViewModel.RestaurantListAdapterViewModelListener() {
+            @Override
+            public void onRowClicked() {
+                launchRestaurantDetailsIntent();
+            }
+        });
     }
 
     @Override
@@ -76,6 +86,11 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         }
     }
 
+    private void launchRestaurantDetailsIntent() {
+        Intent restaurantDetailsIntent = new Intent(mContext, RestaurantDetailsActivity.class);
+        mContext.startActivity(restaurantDetailsIntent);
+    }
+
     static class RestaurantListViewHolder extends RecyclerView.ViewHolder {
 
         private AdapterRestaurantListBinding mBinding;
@@ -85,9 +100,10 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
             this.mBinding = binding;
         }
 
-        private void bindView(String imageUrl, String name, String categories, String distance) {
-            RestaurantListAdapterViewModel viewModel =
-                    new RestaurantListAdapterViewModel(imageUrl, name, categories, distance);
+        private void bindView(String imageUrl, String name, String categories, String distance,
+                              RestaurantListAdapterViewModel.RestaurantListAdapterViewModelListener listener) {
+            RestaurantListAdapterViewModel viewModel = new RestaurantListAdapterViewModel(imageUrl,
+                    name, categories, distance, listener);
             mBinding.setViewModel(viewModel);
         }
     }

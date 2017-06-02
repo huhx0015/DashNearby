@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="112dp"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:onClick="@{viewModel.onClickRow}">
 
         <android.support.v7.widget.AppCompatImageView
             android:layout_width="96dp"

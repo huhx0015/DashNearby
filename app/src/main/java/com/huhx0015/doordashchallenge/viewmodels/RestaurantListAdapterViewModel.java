@@ -1,6 +1,7 @@
 package com.huhx0015.doordashchallenge.viewmodels;
 
 import android.databinding.BaseObservable;
+import android.view.View;
 
 /**
  * Created by Michael Yoon Huh on 6/1/2017.
@@ -10,16 +11,26 @@ import android.databinding.BaseObservable;
 
 public class RestaurantListAdapterViewModel extends BaseObservable {
 
+    private RestaurantListAdapterViewModelListener mListener;
+
     private String mImageUrl;
     private String mName;
     private String mTags;
     private String mStatus;
 
-    public RestaurantListAdapterViewModel(String imageUrl, String name, String tags, String status) {
+    public RestaurantListAdapterViewModel(String imageUrl, String name, String tags, String status,
+                                          RestaurantListAdapterViewModelListener listener) {
         this.mImageUrl = imageUrl;
         this.mName = name;
         this.mTags = tags;
         this.mStatus = status;
+        this.mListener = listener;
+    }
+
+    public void onClickRow(View view) {
+        if (mListener != null) {
+            mListener.onRowClicked();
+        }
     }
 
     public String getImageUrl() {
@@ -36,5 +47,9 @@ public class RestaurantListAdapterViewModel extends BaseObservable {
 
     public String getStatus() {
         return mStatus;
+    }
+
+    public interface RestaurantListAdapterViewModelListener {
+        void onRowClicked();
     }
 }
