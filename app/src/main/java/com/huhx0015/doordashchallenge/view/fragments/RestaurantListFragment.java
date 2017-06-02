@@ -48,6 +48,7 @@ public class RestaurantListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         ((RestaurantApplication) getActivity().getApplication()).getNetworkComponent().inject(this);
     }
 
