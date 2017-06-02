@@ -13,6 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data android:name="DATABASE" android:value="restaurants_favorites.db" />
+        <meta-data android:name="VERSION" android:value="3" />
+        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.huhx0015" />
+
         <activity
             android:name=".view.activities.MainActivity"
             android:label="@string/title_discover"

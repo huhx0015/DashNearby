@@ -1,7 +1,10 @@
 package com.huhx0015.doordashchallenge.viewmodels;
 
+import android.content.Context;
 import android.databinding.BaseObservable;
 import android.view.View;
+
+import com.huhx0015.doordashchallenge.R;
 
 /**
  * Created by Michael Yoon Huh on 6/1/2017.
@@ -19,6 +22,7 @@ public class RestaurantDetailsViewModel extends BaseObservable {
     private String mTags;
     private String mStatus;
     private String mRating;
+    private String mFavoriteButtonText;
 
     public RestaurantDetailsViewModel(RestaurantDetailsViewModelListener listener) {
         this.mListener = listener;
@@ -58,6 +62,10 @@ public class RestaurantDetailsViewModel extends BaseObservable {
         return mRating;
     }
 
+    public String getFavoriteButtonText() {
+        return mFavoriteButtonText;
+    }
+
     public void setRestaurantDetails(String image, String tags, String status, String rating) {
         this.mImageUrl = image;
         this.mTags = tags;
@@ -78,6 +86,15 @@ public class RestaurantDetailsViewModel extends BaseObservable {
 
     public void setErrorVisibility(boolean visibile) {
         this.mErrorVisibility = visibile;
+        notifyChange();
+    }
+
+    public void setIsFavorite(boolean isFavorite, Context context) {
+        if (isFavorite) {
+            mFavoriteButtonText = context.getResources().getString(R.string.restaurant_details_remove_button);
+        } else {
+            mFavoriteButtonText = context.getResources().getString(R.string.restaurant_details_add_button);
+        }
         notifyChange();
     }
 

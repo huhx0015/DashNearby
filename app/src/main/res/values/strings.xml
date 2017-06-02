@@ -15,6 +15,7 @@
 
     <string name="restaurant_list_error">Could not retrieve any restaurants.</string>
 
-    <string name="restaurant_details_button">Add to Favorites</string>
+    <string name="restaurant_details_add_button">Add to Favorites</string>
+    <string name="restaurant_details_remove_button">Remove from Favorites</string>
     <string name="restaurant_details_error">Could not load details for this restaurant.</string>
 </resources>
