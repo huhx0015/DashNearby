@@ -2,6 +2,7 @@ package com.huhx0015.doordashchallenge.view.activities;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -69,13 +70,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_discover) {
-
-        } else if (id == R.id.nav_favorites) {
-
+        switch (id) {
+            case R.id.nav_discover:
+                if (!mFragmentTag.equals(RestaurantListFragment.class.getSimpleName())) {
+                    loadFragment(RestaurantListFragment.newInstance(), RestaurantListFragment.class.getSimpleName());
+                }
+                break;
+            case R.id.nav_favorites:
+                if (!mFragmentTag.equals(RestaurantListFragment.class.getSimpleName())) {
+                    loadFragment(RestaurantListFragment.newInstance(), RestaurantListFragment.class.getSimpleName());
+                }
+                break;
         }
 
         mActivityMainBinding.drawerLayout.closeDrawer(GravityCompat.START);
