@@ -9,9 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.huhx0015.doordashchallenge.R;
+import com.huhx0015.doordashchallenge.application.RestaurantApplication;
 import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
 import com.huhx0015.doordashchallenge.databinding.FragmentRestaurantListBinding;
-import com.huhx0015.doordashchallenge.view.adapters.RestaurantListAdapter;
+import javax.inject.Inject;
+import retrofit2.Retrofit;
 
 /**
  * Created by Michael Yoon Huh on 6/1/2017.
@@ -20,6 +22,15 @@ import com.huhx0015.doordashchallenge.view.adapters.RestaurantListAdapter;
 public class RestaurantListFragment extends Fragment {
 
     private FragmentRestaurantListBinding mBinding;
+
+    @Inject
+    Retrofit mRetrofit;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((RestaurantApplication) getActivity().getApplication()).getNetworkComponent().inject(this);
+    }
 
     @Nullable
     @Override
