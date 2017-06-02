@@ -18,7 +18,7 @@ public class RestaurantDetailsViewModel extends BaseObservable {
     private String mImageUrl;
     private String mTags;
     private String mStatus;
-    private String mPrice;
+    private String mRating;
 
     public RestaurantDetailsViewModel(RestaurantDetailsViewModelListener listener) {
         this.mListener = listener;
@@ -54,15 +54,15 @@ public class RestaurantDetailsViewModel extends BaseObservable {
         return mStatus;
     }
 
-    public String getPrice() {
-        return mPrice;
+    public String getRating() {
+        return mRating;
     }
 
-    public void setRestaurantDetails(String image, String tags, String status, String price) {
+    public void setRestaurantDetails(String image, String tags, String status, String rating) {
         this.mImageUrl = image;
         this.mTags = tags;
         this.mStatus = status;
-        this.mPrice = price;
+        this.mRating = rating;
         notifyChange();
     }
 

@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
-                android:text="@{viewModel.price}"
+                android:text="@{viewModel.rating}"
                 android:textColor="@color/textGreen"
                 android:textStyle="bold" />
 

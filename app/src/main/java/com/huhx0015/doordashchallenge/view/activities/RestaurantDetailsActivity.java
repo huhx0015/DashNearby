@@ -25,11 +25,14 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     private static final int INVALID_RESTAURANT_ID = -1;
 
     public static final String BUNDLE_RESTAURANT_ID = LOG_TAG + "_BUNDLE_RESTAURANT_ID";
+    public static final String BUNDLE_RESTAURANT_NAME = LOG_TAG + "_BUNDLE_RESTAURANT_NAME";
+    public static final String BUNDLE_RESTAURANT_DETAILS = LOG_TAG + "_BUNDLE_RESTAURANT_DETAILS";
 
     private ActivityRestaurantDetailsBinding mBinding;
     private RestaurantDetailsViewModel mViewModel;
     private RestaurantDetail mRestaurantDetail;
     private int mRestaurantId;
+    private String mRestaurantName;
 
     @Inject
     Retrofit mRetrofit;
@@ -38,14 +41,28 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initBinding();
-        initView();
 
         if (savedInstanceState != null) {
 
         } else {
             mRestaurantId = getIntent().getIntExtra(BUNDLE_RESTAURANT_ID, INVALID_RESTAURANT_ID);
-            queryRestaurantDetails();
+            mRestaurantName = getIntent().getStringExtra(BUNDLE_RESTAURANT_NAME);
+            mRestaurantDetail = getIntent().getParcelableExtra(BUNDLE_RESTAURANT_DETAILS);
+
+            initActionBar();
+
+            if (mRestaurantDetail == null) {
+                queryRestaurantDetails();
+            } else {
+                setRestaurantDetails();
+            }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mBinding.unbind();
     }
 
     @Override
@@ -64,15 +81,11 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         mBinding.setViewModel(mViewModel);
     }
 
-    private void initView() {
-        initActionBar();
-    }
-
     private void initActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("RESTAURANT");
+            actionBar.setTitle(mRestaurantName != null ? mRestaurantName : getString(R.string.app_name));
         }
     }
 
@@ -80,9 +93,9 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         String imageUrl = mRestaurantDetail.getCoverImgUrl();
         String tags = TagsUtils.formatTags(mRestaurantDetail.getTags());
         String status = mRestaurantDetail.getStatus();
-        String price = String.valueOf(mRestaurantDetail.getPriceRange());
+        String rating = String.valueOf(mRestaurantDetail.getAverageRating());
 
-        mViewModel.setRestaurantDetails(imageUrl, tags, status, price);
+        mViewModel.setRestaurantDetails(imageUrl, tags, status, rating);
         mViewModel.setRestaurantDetailsVisible(true);
     }
 
