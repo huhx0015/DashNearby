@@ -17,6 +17,7 @@ import com.huhx0015.doordashchallenge.databinding.FragmentRestaurantListBinding;
 import com.huhx0015.doordashchallenge.models.Restaurant;
 import com.huhx0015.doordashchallenge.view.adapters.RestaurantListAdapter;
 import com.huhx0015.doordashchallenge.view.decorators.ListDividerItemDecoration;
+import com.huhx0015.doordashchallenge.viewmodels.RestaurantListViewModel;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit2.Call;
@@ -34,6 +35,7 @@ public class RestaurantListFragment extends Fragment {
 
     private FragmentRestaurantListBinding mBinding;
     private List<Restaurant> mRestaurantList;
+    private RestaurantListViewModel mViewModel;
 
     @Inject
     Retrofit mRetrofit;
@@ -53,6 +55,8 @@ public class RestaurantListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(getActivity().getLayoutInflater(), R.layout.fragment_restaurant_list, null, false);
+        mViewModel = new RestaurantListViewModel();
+        mBinding.setViewModel(mViewModel);
         initView();
         return mBinding.getRoot();
     }
@@ -98,9 +102,11 @@ public class RestaurantListFragment extends Fragment {
                 String.valueOf(RestaurantConstants.DOORDASH_LAT),
                 String.valueOf(RestaurantConstants.DOORDASH_LNG));
 
+        mViewModel.setProgressBarVisible(true);
         call.enqueue(new Callback<List<Restaurant>>() {
             @Override
             public void onResponse(Call<List<Restaurant>> call, Response<List<Restaurant>> response) {
+                mViewModel.setProgressBarVisible(false);
                 mRestaurantList = response.body();
 
                 if (mRestaurantList != null && mRestaurantList.size() > 0) {
@@ -112,6 +118,7 @@ public class RestaurantListFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<Restaurant>> call, Throwable t) {
+                mViewModel.setProgressBarVisible(false);
                 Log.e(LOG_TAG, "ERROR: onFailure(): Restaurant list query failed: " + t.getLocalizedMessage());
             }
         });
