@@ -31,7 +31,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     @Override
     public void onBindViewHolder(RestaurantListAdapter.RestaurantListViewHolder holder, int position) {
-        String imageUrl = mRestaurant.get(position).getUrl();
+        String imageUrl = mRestaurant.get(position).getCoverImgUrl();
         String name = mRestaurant.get(position).getName();
         String tags = "";
         String status = mRestaurant.get(position).getStatus();
@@ -43,7 +43,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
             int count = 0;
             for (String tag : tagList) {
                 tagBuilder.append(tag);
-                if (count < tagList.size()) {
+                if (count++ < tagList.size() - 1) {
                     tagBuilder.append(", ");
                 }
             }

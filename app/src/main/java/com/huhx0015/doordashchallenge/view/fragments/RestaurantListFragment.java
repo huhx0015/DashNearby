@@ -16,9 +16,8 @@ import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
 import com.huhx0015.doordashchallenge.databinding.FragmentRestaurantListBinding;
 import com.huhx0015.doordashchallenge.models.Restaurant;
 import com.huhx0015.doordashchallenge.view.adapters.RestaurantListAdapter;
-
+import com.huhx0015.doordashchallenge.view.decorators.ListDividerItemDecoration;
 import java.util.List;
-
 import javax.inject.Inject;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -84,6 +83,7 @@ public class RestaurantListFragment extends Fragment {
         mBinding.fragmentRestaurantRecyclerView.setHasFixedSize(true);
         mBinding.fragmentRestaurantRecyclerView.setDrawingCacheEnabled(true);
         mBinding.fragmentRestaurantRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        mBinding.fragmentRestaurantRecyclerView.addItemDecoration(new ListDividerItemDecoration(getContext()));
     }
 
     private void setRecyclerView() {
@@ -103,7 +103,10 @@ public class RestaurantListFragment extends Fragment {
             public void onResponse(Call<List<Restaurant>> call, Response<List<Restaurant>> response) {
                 mRestaurantList = response.body();
 
-                Log.d(LOG_TAG, "Size: " + mRestaurantList.size());
+                if (mRestaurantList != null && mRestaurantList.size() > 0) {
+                    setRecyclerView();
+                }
+
                 Log.d(LOG_TAG, "onResponse(): Restaurant list query response received.");
             }
 
