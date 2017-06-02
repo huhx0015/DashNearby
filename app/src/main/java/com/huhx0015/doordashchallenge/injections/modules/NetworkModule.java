@@ -46,7 +46,10 @@ public class NetworkModule {
     OkHttpClient provideOkHttpClient(Cache cache) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        return new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        return new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .cache(cache)
+                .build();
     }
 
     @Provides
