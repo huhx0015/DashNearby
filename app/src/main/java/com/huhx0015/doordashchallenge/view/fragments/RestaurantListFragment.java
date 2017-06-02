@@ -92,14 +92,6 @@ public class RestaurantListFragment extends Fragment {
         mBinding.unbind();
     }
 
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser && mTag.equals(TAG_FAVORITES) && mRestaurantList != null) {
-//            filterList();
-//        }
-//    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
