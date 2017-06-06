@@ -96,7 +96,9 @@ public class RestaurantListFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(INSTANCE_TAG, mTag);
-        outState.putParcelableArrayList(INSTANCE_RESTAURANT_LIST, new ArrayList<>(mRestaurantList));
+        if (mRestaurantList != null) {
+            outState.putParcelableArrayList(INSTANCE_RESTAURANT_LIST, new ArrayList<>(mRestaurantList));
+        }
     }
 
     private void initBinding() {
