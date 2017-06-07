@@ -2,24 +2,18 @@ package com.huhx0015.doordashchallenge.view.activities;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.Toast;
 
 import com.huhx0015.doordashchallenge.R;
 import com.huhx0015.doordashchallenge.api.RetrofitInterface;
 import com.huhx0015.doordashchallenge.application.RestaurantApplication;
-import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
 import com.huhx0015.doordashchallenge.databinding.ActivityLoginBinding;
 import com.huhx0015.doordashchallenge.models.Login;
-import com.huhx0015.doordashchallenge.models.Restaurant;
 import com.huhx0015.doordashchallenge.models.Token;
 import com.huhx0015.doordashchallenge.viewmodels.LoginActivityViewModel;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -93,7 +87,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
 
         final RetrofitInterface request = mRetrofit.create(RetrofitInterface.class);
 
-        Call<Token> call = request.queryLoginToken(new Login(mEmail, mPassword));
+        Call<Token> call = request.getAuthToken(new Login(mEmail, mPassword));
 
         call.enqueue(new Callback<Token>() {
             @Override
