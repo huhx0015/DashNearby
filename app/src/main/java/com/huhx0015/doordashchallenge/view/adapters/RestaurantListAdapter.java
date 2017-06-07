@@ -1,6 +1,5 @@
 package com.huhx0015.doordashchallenge.view.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -9,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import com.huhx0015.doordashchallenge.R;
-import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
 import com.huhx0015.doordashchallenge.databinding.AdapterRestaurantListBinding;
 import com.huhx0015.doordashchallenge.models.Restaurant;
 import com.huhx0015.doordashchallenge.models.RestaurantDetail;
@@ -92,6 +90,10 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         bundle.putParcelable(RestaurantDetailsActivity.BUNDLE_RESTAURANT_DETAILS, details);
         restaurantDetailsIntent.putExtras(bundle);
         mContext.startActivity(restaurantDetailsIntent);
+    }
+
+    public void updateRestaurantList(List<Restaurant> updatedList) {
+        this.mRestaurantList = updatedList;
     }
 
     static class RestaurantListViewHolder extends RecyclerView.ViewHolder {

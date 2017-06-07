@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.huhx0015.doordashchallenge.R;
+import com.huhx0015.doordashchallenge.view.listeners.RestaurantListScrollListener;
 import com.huhx0015.doordashchallenge.api.RetrofitInterface;
 import com.huhx0015.doordashchallenge.application.RestaurantApplication;
 import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
@@ -21,7 +22,9 @@ import com.huhx0015.doordashchallenge.view.adapters.RestaurantListAdapter;
 import com.huhx0015.doordashchallenge.view.decorators.ListDividerItemDecoration;
 import com.huhx0015.doordashchallenge.viewmodels.RestaurantListViewModel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,10 +44,19 @@ public class RestaurantListFragment extends Fragment {
 
     private static final String INSTANCE_RESTAURANT_LIST = LOG_TAG + "_INSTANCE_RESTAURANT_LIST";
     private static final String INSTANCE_TAG = LOG_TAG + "_INSTANCE_TAG";
+
+    private static final int LIST_ITEM_LIMIT = 10;
     private static final String TAG_FAVORITES = "TAG_FAVORITES";
 
+    private static final String QUERY_LAT = "lat";
+    private static final String QUERY_LNG = "lng";
+    private static final String QUERY_OFFSET = "offset";
+    private static final String QUERY_LIMIT = "limit";
+
+    private boolean mIsEndOfList = false;
     private FragmentRestaurantListBinding mBinding;
     private List<Restaurant> mRestaurantList;
+    private RestaurantListAdapter mAdapter;
     private RestaurantListViewModel mViewModel;
     private String mTag;
 
@@ -77,10 +89,12 @@ public class RestaurantListFragment extends Fragment {
             if (mRestaurantList != null && mRestaurantList.size() > 0) {
                 setRecyclerView();
             } else {
-                queryRestaurantList();
+                queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
+                        0, LIST_ITEM_LIMIT);
             }
         } else {
-            queryRestaurantList();
+            queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
+                    0, LIST_ITEM_LIMIT);
         }
 
         return mBinding.getRoot();
@@ -110,22 +124,35 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setItemPrefetchEnabled(true);
-        layoutManager.setInitialPrefetchItemCount(RestaurantConstants.RECYCLER_VIEW_PREFETCH);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager.setItemPrefetchEnabled(true);
+        mLayoutManager.setInitialPrefetchItemCount(RestaurantConstants.RECYCLER_VIEW_PREFETCH);
 
-        mBinding.fragmentRestaurantRecyclerView.setLayoutManager(layoutManager);
+        mBinding.fragmentRestaurantRecyclerView.setLayoutManager(mLayoutManager);
         mBinding.fragmentRestaurantRecyclerView.setHasFixedSize(true);
         mBinding.fragmentRestaurantRecyclerView.setDrawingCacheEnabled(true);
         mBinding.fragmentRestaurantRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         mBinding.fragmentRestaurantRecyclerView.addItemDecoration(new ListDividerItemDecoration(getContext()));
+
+        RestaurantListScrollListener mScrollListener = new RestaurantListScrollListener(mLayoutManager) {
+            @Override
+            public void onLoadMore(int current_page) {
+                if (!mTag.equals(TAG_FAVORITES) && !mIsEndOfList) {
+                    queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
+                            current_page * LIST_ITEM_LIMIT, LIST_ITEM_LIMIT);
+                }
+            }
+        };
+        mBinding.fragmentRestaurantRecyclerView.addOnScrollListener(mScrollListener);
+
+        setRecyclerView();
     }
 
     private void setRecyclerView() {
         mViewModel.setRestaurantListVisible(true);
-        RestaurantListAdapter adapter = new RestaurantListAdapter(mRestaurantList, getContext());
-        adapter.setHasStableIds(true);
-        mBinding.fragmentRestaurantRecyclerView.setAdapter(adapter);
+        mAdapter = new RestaurantListAdapter(mRestaurantList, getContext());
+        mAdapter.setHasStableIds(true);
+        mBinding.fragmentRestaurantRecyclerView.setAdapter(mAdapter);
     }
 
     private void filterList() {
@@ -138,30 +165,59 @@ public class RestaurantListFragment extends Fragment {
         }
     }
 
-    private void queryRestaurantList() {
+    private void updateList(List<Restaurant> updatedList, int rangePosition) {
+        mAdapter.updateRestaurantList(updatedList);
+        mAdapter.notifyItemRangeInserted(rangePosition, mRestaurantList.size() - 1);
+    }
+
+    private void queryRestaurantList(Double lat, Double lng, final Integer offset, Integer limit) {
         RetrofitInterface restaurantListRequest = mRetrofit.create(RetrofitInterface.class);
-        Call<List<Restaurant>> call = restaurantListRequest.getRestaurantList(
-                String.valueOf(RestaurantConstants.DOORDASH_LAT),
-                String.valueOf(RestaurantConstants.DOORDASH_LNG));
+
+        Map<String, String> requestParams = new HashMap<>();
+        if (lat != null && lng != null) {
+            requestParams.put(QUERY_LAT, String.valueOf(lat));
+            requestParams.put(QUERY_LNG, String.valueOf(lng));
+        }
+        if (!mTag.equals(TAG_FAVORITES) && offset != null && limit != null) {
+            requestParams.put(QUERY_OFFSET, String.valueOf(offset));
+            requestParams.put(QUERY_LIMIT, String.valueOf(limit));
+        }
+
+        Call<List<Restaurant>> call = restaurantListRequest.getRestaurantList(requestParams);
 
         mViewModel.setProgressBarVisible(true);
         call.enqueue(new Callback<List<Restaurant>>() {
             @Override
             public void onResponse(Call<List<Restaurant>> call, Response<List<Restaurant>> response) {
                 mViewModel.setProgressBarVisible(false);
-                mRestaurantList = response.body();
-
-                if (mTag.equals(TAG_FAVORITES)) {
-                    filterList();
-                }
-
-                if (mRestaurantList != null && mRestaurantList.size() > 0) {
-                    setRecyclerView();
-                } else {
-                    mViewModel.setErrorVisibility(true);
-                }
 
                 Log.d(LOG_TAG, "onResponse(): Restaurant list query response received.");
+
+                if (response.isSuccessful()) {
+
+                    if (mRestaurantList == null) {
+                        mRestaurantList = new ArrayList<>();
+                    }
+
+                    List<Restaurant> loadedRestaurantList = response.body();
+                    if (loadedRestaurantList != null) {
+                        mRestaurantList.addAll(loadedRestaurantList);
+                    }
+
+                    if (mTag.equals(TAG_FAVORITES)) {
+                        filterList();
+                    }
+
+                    if (mRestaurantList != null && mRestaurantList.size() > 0) {
+                        updateList(mRestaurantList, offset);
+                    } else {
+                        mViewModel.setRestaurantListVisible(false);
+                        mViewModel.setErrorVisibility(true);
+                    }
+                } else {
+                    mViewModel.setRestaurantListVisible(false);
+                    mViewModel.setErrorVisibility(true);
+                }
             }
 
             @Override
