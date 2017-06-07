@@ -44,6 +44,7 @@ public class RestaurantListFragment extends Fragment {
 
     private static final String INSTANCE_RESTAURANT_LIST = LOG_TAG + "_INSTANCE_RESTAURANT_LIST";
     private static final String INSTANCE_TAG = LOG_TAG + "_INSTANCE_TAG";
+    private static final String INSTANCE_END_OF_LIST = LOG_TAG + "_INSTANCE_END_OF_LIST";
 
     private static final int LIST_ITEM_LIMIT = 10;
     private static final String TAG_FAVORITES = "TAG_FAVORITES";
@@ -85,14 +86,17 @@ public class RestaurantListFragment extends Fragment {
         if (savedInstanceState != null) {
             mTag = savedInstanceState.getString(INSTANCE_TAG);
             mRestaurantList = savedInstanceState.getParcelableArrayList(INSTANCE_RESTAURANT_LIST);
+            mIsEndOfList = savedInstanceState.getBoolean(INSTANCE_END_OF_LIST);
 
             if (mRestaurantList != null && mRestaurantList.size() > 0) {
                 setRecyclerView();
             } else {
+                mIsEndOfList = false;
                 queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
                         0, LIST_ITEM_LIMIT);
             }
         } else {
+            mIsEndOfList = false;
             queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
                     0, LIST_ITEM_LIMIT);
         }
@@ -111,6 +115,7 @@ public class RestaurantListFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putString(INSTANCE_TAG, mTag);
         outState.putParcelableArrayList(INSTANCE_RESTAURANT_LIST, new ArrayList<>(mRestaurantList));
+        outState.putBoolean(INSTANCE_END_OF_LIST, mIsEndOfList);
     }
 
     private void initBinding() {
@@ -165,7 +170,7 @@ public class RestaurantListFragment extends Fragment {
         }
     }
 
-    private void updateList(List<Restaurant> updatedList, int rangePosition) {
+    private void updateList(List<Restaurant> updatedList, final int rangePosition) {
         mAdapter.updateRestaurantList(updatedList);
         mAdapter.notifyItemRangeInserted(rangePosition, mRestaurantList.size() - 1);
     }
@@ -195,21 +200,32 @@ public class RestaurantListFragment extends Fragment {
 
                 if (response.isSuccessful()) {
 
-                    if (mRestaurantList == null) {
-                        mRestaurantList = new ArrayList<>();
+                    List<Restaurant> updatedRestaurantList = response.body();
+                    if (updatedRestaurantList != null) {
+
+                        Log.d(LOG_TAG, "onResponse(): Updated Restaurant list size: " + updatedRestaurantList.size());
+
+                        if (mRestaurantList == null) {
+                            mRestaurantList = new ArrayList<>();
+                        }
+                        mRestaurantList.addAll(updatedRestaurantList);
+
+                        Log.d(LOG_TAG, "onResponse(): Restaurant list size: " + mRestaurantList.size());
+
+                        // If returned list is less than the item limit, the last page of
+                        // restaurants have been reached.
+                        if (updatedRestaurantList.size() < LIST_ITEM_LIMIT - 1) {
+                            mIsEndOfList = true;
+                        }
                     }
 
-                    List<Restaurant> loadedRestaurantList = response.body();
-                    if (loadedRestaurantList != null) {
-                        mRestaurantList.addAll(loadedRestaurantList);
-                    }
-
+                    // Filters the list if currently in "Favorites" view mode.
                     if (mTag.equals(TAG_FAVORITES)) {
                         filterList();
                     }
 
                     if (mRestaurantList != null && mRestaurantList.size() > 0) {
-                        updateList(mRestaurantList, offset);
+                        updateList(mRestaurantList, offset + 1);
                     } else {
                         mViewModel.setRestaurantListVisible(false);
                         mViewModel.setErrorVisibility(true);
