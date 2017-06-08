@@ -46,14 +46,17 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((RestaurantApplication) getApplication()).getNetworkComponent().inject(this);
+        
+        initBinding();
+        initTextWatchers();
+        initLoginState();
+    }
 
+    private void initBinding() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         mViewModel = new LoginActivityViewModel();
         mViewModel.setListener(this);
         mBinding.setViewModel(mViewModel);
-
-        initTextWatchers();
-        initLoginState();
     }
 
     private void initTextWatchers() {
@@ -154,7 +157,17 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                launchMainActivity();
+                if (response.isSuccessful()) {
+                    User user = response.body();
+
+                    if (user != null) {
+                        launchMainActivity();
+                    } else {
+                        handleError("An error occurred while trying to login. Please try again.");
+                    }
+                } else {
+                    handleError("An error occurred while trying to login. Please try again.");
+                }
             }
 
             @Override
