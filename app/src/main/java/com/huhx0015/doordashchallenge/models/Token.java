@@ -12,4 +12,8 @@ public class Token {
     @SerializedName("token")
     @Expose
     public String token;
+
+    @SerializedName("non_field_errors")
+    @Expose
+    public String nonFieldErrors;
 }

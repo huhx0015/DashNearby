@@ -54,18 +54,18 @@ public class NetworkModule {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         //OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
-        Interceptor authTokenInterceptor = new Interceptor() {
-            @Override
-            public Response intercept(Interceptor.Chain chain) throws IOException {
-                Request original = chain.request();
-
-                Request.Builder requestBuilder = original.newBuilder()
-                        .header("Authorization", "token"); // <-- this is the important line
-
-                Request request = requestBuilder.build();
-                return chain.proceed(request);
-            }
-        };
+//        Interceptor authTokenInterceptor = new Interceptor() {
+//            @Override
+//            public Response intercept(Interceptor.Chain chain) throws IOException {
+//                Request original = chain.request();
+//
+//                Request.Builder requestBuilder = original.newBuilder()
+//                        .header("Authorization", "token"); // <-- this is the important line
+//
+//                Request request = requestBuilder.build();
+//                return chain.proceed(request);
+//            }
+//        };
 
         return new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
