@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((RestaurantApplication) getApplication()).getNetworkComponent().inject(this);
-        
+
         initBinding();
         initTextWatchers();
         initLoginState();
@@ -166,7 +166,16 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
                         handleError("An error occurred while trying to login. Please try again.");
                     }
                 } else {
-                    handleError("An error occurred while trying to login. Please try again.");
+                    if (response.code() == RestaurantConstants.HTTP_UNAUTHORIZED) {
+                        String previousToken = RestaurantPreferences.getAuthToken(LoginActivity.this);
+                        if (previousToken != null) {
+                            refreshToken(previousToken);
+                        } else {
+                            handleError("An error occurred while trying to login. Please try again.");
+                        }
+                    } else {
+                        handleError("An error occurred while trying to login. Please try again.");
+                    }
                 }
             }
 
