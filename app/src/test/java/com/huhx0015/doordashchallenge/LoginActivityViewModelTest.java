@@ -1,5 +1,6 @@
 package com.huhx0015.doordashchallenge;
 
+import com.huhx0015.doordashchallenge.viewmodels.LoginActivityViewModel;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -12,16 +13,5 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class LoginActivityViewModelTest {
 
     @Mock
-    
-
-
-
- +    private RestaurantDetailsViewModel mViewModel;
- +
-         +    @Before
- +    public void setUp() {
-        +        MockitoAnnotations.initMocks(this);
-        +        mViewModel = new RestaurantDetailsViewModel();
-        +    }
-
+    private LoginActivityViewModel mViewModel;
 }
