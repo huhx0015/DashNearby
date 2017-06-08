@@ -1,4 +1,4 @@
-package com.huhx0015.doordashchallenge;
+package com.huhx0015.doordashchallenge.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;

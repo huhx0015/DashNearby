@@ -10,7 +10,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Toast;
 import com.huhx0015.doordashchallenge.R;
-import com.huhx0015.doordashchallenge.RestaurantPreferences;
+import com.huhx0015.doordashchallenge.data.RestaurantPreferences;
 import com.huhx0015.doordashchallenge.api.RetrofitInterface;
 import com.huhx0015.doordashchallenge.application.RestaurantApplication;
 import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
@@ -36,8 +36,8 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
     private ActivityLoginBinding mBinding;
     private LoginActivityViewModel mViewModel;
 
-    private String mEmail = "";
-    private String mPassword = "";
+    private String mEmail;
+    private String mPassword;
 
     @Inject
     Retrofit mRetrofit;
@@ -53,7 +53,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
         mBinding.setViewModel(mViewModel);
 
         initTextWatchers();
-
         initLoginState();
     }
 
@@ -86,10 +85,11 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
     }
 
     private void initLoginState() {
-
         String token = RestaurantPreferences.getAuthToken(this);
         if (token != null) {
             getUserData(token);
+        } else {
+            mViewModel.setLoginFieldVisibility(true);
         }
     }
 
@@ -98,11 +98,21 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
         getAuthToken();
     }
 
+    private void handleError(String message) {
+        mViewModel.setLoginFieldVisibility(true);
+        mViewModel.setProgressBarVisibility(false);
+
+        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+    }
+
     private void getAuthToken() {
         Log.d(LOG_TAG, "getAuthToken(): Email: " + mEmail + " | mPassword: " + mPassword);
 
         RetrofitInterface request = mRetrofit.create(RetrofitInterface.class);
         Call<Token> call = request.getAuthToken(new Login(mEmail, mPassword));
+
+        mViewModel.setLoginFieldVisibility(false);
+        mViewModel.setProgressBarVisibility(true);
         call.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
@@ -113,29 +123,27 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
                         RestaurantPreferences.setAuthToken(token.token, LoginActivity.this);
                         getUserData(token.token);
                     } else{
-                        Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
-                                Toast.LENGTH_LONG).show();
+                        handleError("An error occurred while trying to login. Please try again.");
                     }
                 } else {
                     if (response.code() == RestaurantConstants.HTTP_BAD_REQUEST) {
-                        Toast.makeText(LoginActivity.this, "Invalid credentials provided.",
-                                Toast.LENGTH_LONG).show();
+                        handleError("Invalid credentials provided.");
                     } else if (response.code() == RestaurantConstants.HTTP_FORBIDDEN) {
                         String previousToken = RestaurantPreferences.getAuthToken(LoginActivity.this);
                         if (previousToken != null) {
                             refreshToken(previousToken);
+                        } else {
+                            handleError("An error occurred while trying to login. Please try again.");
                         }
                     } else {
-                        Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
-                                Toast.LENGTH_LONG).show();
+                        handleError("An error occurred while trying to login. Please try again.");
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<Token> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
-                        Toast.LENGTH_LONG).show();
+                handleError("An error occurred while trying to login. Please try again.");
             }
         });
     }
@@ -151,8 +159,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
-                        Toast.LENGTH_LONG).show();
+                handleError("An error occurred while trying to login. Please try again.");
             }
         });
     }
@@ -170,24 +177,20 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
                         RestaurantPreferences.setAuthToken(token.token, LoginActivity.this);
                         getUserData(token.token);
                     } else{
-                        Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
-                                Toast.LENGTH_LONG).show();
+                        handleError("An error occurred while trying to login. Please try again.");
                     }
                 } else {
                     if (response.code() == RestaurantConstants.HTTP_BAD_REQUEST) {
-                        Toast.makeText(LoginActivity.this, "Invalid credentials provided.",
-                                Toast.LENGTH_LONG).show();
+                        handleError("Invalid credentials provided.");
                     } else {
-                        Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
-                                Toast.LENGTH_LONG).show();
+                        handleError("An error occurred while trying to login. Please try again.");
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<Token> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
-                        Toast.LENGTH_LONG).show();
+                handleError("An error occurred while trying to login. Please try again.");
             }
         });
     }
