@@ -9,7 +9,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.huhx0015.doordashchallenge.R;
 import com.huhx0015.doordashchallenge.RestaurantPreferences;
 import com.huhx0015.doordashchallenge.api.RetrofitInterface;
@@ -20,9 +19,7 @@ import com.huhx0015.doordashchallenge.models.Login;
 import com.huhx0015.doordashchallenge.models.Token;
 import com.huhx0015.doordashchallenge.models.User;
 import com.huhx0015.doordashchallenge.viewmodels.LoginActivityViewModel;
-
 import javax.inject.Inject;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -123,6 +120,11 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
                     if (response.code() == RestaurantConstants.HTTP_BAD_REQUEST) {
                         Toast.makeText(LoginActivity.this, "Invalid credentials provided.",
                                 Toast.LENGTH_LONG).show();
+                    } else if (response.code() == RestaurantConstants.HTTP_FORBIDDEN) {
+                        String previousToken = RestaurantPreferences.getAuthToken(LoginActivity.this);
+                        if (previousToken != null) {
+                            refreshToken(previousToken);
+                        }
                     } else {
                         Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
                                 Toast.LENGTH_LONG).show();
@@ -149,7 +151,43 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
+    private void refreshToken(String token) {
+        RetrofitInterface request = mRetrofit.create(RetrofitInterface.class);
+        Call<Token> call = request.refreshToken(token);
+        call.enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Call<Token> call, Response<Token> response) {
+                if (response.isSuccessful()) {
+                    Token token = response.body();
+
+                    if (token != null && token.token != null) {
+                        RestaurantPreferences.setAuthToken(token.token, LoginActivity.this);
+                        getUserData(token.token);
+                    } else{
+                        Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    if (response.code() == RestaurantConstants.HTTP_BAD_REQUEST) {
+                        Toast.makeText(LoginActivity.this, "Invalid credentials provided.",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "An error occurred while trying to login. Please try again.",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
