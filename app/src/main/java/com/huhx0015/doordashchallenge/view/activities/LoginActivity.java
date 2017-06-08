@@ -150,7 +150,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
 
     private void getUserData(String token) {
         RetrofitInterface request = mRetrofit.create(RetrofitInterface.class);
-        Call<User> call = request.getUser(token);
+        Call<User> call = request.getUser(RestaurantConstants.TOKEN_ID + token);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -166,7 +166,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
 
     private void refreshToken(String token) {
         RetrofitInterface request = mRetrofit.create(RetrofitInterface.class);
-        Call<Token> call = request.refreshToken(token);
+        Call<Token> call = request.refreshToken(RestaurantConstants.TOKEN_ID + token);
         call.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {

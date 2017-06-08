@@ -27,7 +27,7 @@ public interface RetrofitInterface {
     Call<User> getUser(@Header("Authorization") String token);
 
     @POST("/v2/auth/token/refresh/")
-    Call<Token> refreshToken(@Header("Authorization") String token);
+    Call<Token> refreshToken(@Body String token);
 
     @GET("v2/restaurant/")
     Call<List<Restaurant>> getRestaurantList(@Query("lat") String lat, @Query("lng") String lng);
