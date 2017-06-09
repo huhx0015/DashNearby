@@ -120,17 +120,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        switch (id) {
-            case R.id.nav_discover:
-                if (!mFragmentTag.equals(DashConstants.TAG_DISCOVER)) {
-                    loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
-                }
-                break;
-            case R.id.nav_favorites:
-                if (!mFragmentTag.equals(DashConstants.TAG_FAVORITES)) {
-                    loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_FAVORITES), DashConstants.TAG_FAVORITES);
-                }
-                break;
+        if (mFragmentTag != null) {
+            switch (id) {
+                case R.id.nav_discover:
+                    if (!mFragmentTag.equals(DashConstants.TAG_DISCOVER)) {
+                        loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
+                    }
+                    break;
+                case R.id.nav_favorites:
+                    if (!mFragmentTag.equals(DashConstants.TAG_FAVORITES)) {
+                        loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_FAVORITES), DashConstants.TAG_FAVORITES);
+                    }
+                    break;
+            }
         }
 
         mActivityMainBinding.drawerLayout.closeDrawer(GravityCompat.START);
