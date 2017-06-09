@@ -106,7 +106,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
 
     private void initBinding() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_restaurant_details);
-        mViewModel = new RestaurantDetailsViewModel(this);
+        mViewModel = new RestaurantDetailsViewModel();
+        mViewModel.setListener(this);
         mBinding.setViewModel(mViewModel);
     }
 

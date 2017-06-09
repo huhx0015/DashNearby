@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class TagsUtilsTest {
 
     @Test
-    public void tags_isCorrect() throws Exception {
+    public void testFormatTags() throws Exception {
         List<String> testTags = new ArrayList<>();
         testTags.add("Italian");
         testTags.add("Chinese");
