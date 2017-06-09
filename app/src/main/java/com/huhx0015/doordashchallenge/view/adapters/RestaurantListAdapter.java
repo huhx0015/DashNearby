@@ -92,6 +92,10 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         mContext.startActivity(restaurantDetailsIntent);
     }
 
+    public void updateRestaurantList(List<Restaurant> updatedList) {
+        this.mRestaurantList = updatedList;
+    }
+
     static class RestaurantListViewHolder extends RecyclerView.ViewHolder {
 
         private AdapterRestaurantListBinding mBinding;
