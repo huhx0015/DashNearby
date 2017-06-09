@@ -1,5 +1,6 @@
 package com.huhx0015.doordashchallenge.view.activities;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -23,32 +24,47 @@ import retrofit2.Retrofit;
 
 /**
  * Created by Michael Yoon Huh on 6/1/2017.
- *
- *  TODO: Sugar ORM is not compatible with Instant Run! Instant Run must be disabled first.
- *  SEE HERE: https://stackoverflow.com/questions/33031570/android-sugar-orm-no-such-table-exception
  */
 
 public class RestaurantDetailsActivity extends AppCompatActivity implements RestaurantDetailsViewModel.RestaurantDetailsViewModelListener {
 
-    private static final String LOG_TAG = RestaurantDetailsActivity.class.getSimpleName();
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
+    // CONSTANT VARIABLES:
     private static final int INVALID_ID = -1;
 
+    // DATABINDING VARIABLES:
+    private ActivityRestaurantDetailsBinding mBinding;
+    private RestaurantDetailsViewModel mViewModel;
+
+    // INTENT VARIABLES:
+    public static final int REQUEST_RESTAURANT_DETAILS = 3425;
+    public static final int RESULT_FAVORITE_ADDED = 5348;
+    public static final int RESULT_FAVORITE_REMOVED = 5324;
+
+    // LOGGING VARIABLES:
+    private static final String LOG_TAG = RestaurantDetailsActivity.class.getSimpleName();
+
+    // BUNDLE VARIABLES:
     public static final String BUNDLE_RESTAURANT_ID = LOG_TAG + "_BUNDLE_RESTAURANT_ID";
     public static final String BUNDLE_RESTAURANT_NAME = LOG_TAG + "_BUNDLE_RESTAURANT_NAME";
     public static final String BUNDLE_RESTAURANT_DETAILS = LOG_TAG + "_BUNDLE_RESTAURANT_DETAILS";
     public static final String BUNDLE_IS_FAVORITE = LOG_TAG + "_BUNDLE_IS_FAVORITE";
     public static final String BUNDLE_DATABASE_ID = LOG_TAG + "_DATABASE_ID";
+    public static final String BUNDLE_RESTAURANT_POSITION = LOG_TAG + "_BUNDLE_RESTAURANT_POSITION";
 
-    private ActivityRestaurantDetailsBinding mBinding;
-    private RestaurantDetailsViewModel mViewModel;
+    // RESTAURANT VARIABLES:
     private RestaurantDetail mRestaurantDetail;
+    private String mRestaurantName;
     private boolean mIsFavorite;
     private int mRestaurantId;
+    private int mRestaurantPosition;
     private long mDatabaseId = INVALID_ID;
-    private String mRestaurantName;
 
-    @Inject
-    Retrofit mRetrofit;
+    // RETROFIT VARIABLES:
+    @Inject Retrofit mRetrofit;
+
+    /** ACTIVITY LIFECYCLE METHODS _____________________________________________________________ **/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +77,13 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
             mRestaurantDetail = savedInstanceState.getParcelable(BUNDLE_RESTAURANT_DETAILS);
             mIsFavorite = savedInstanceState.getBoolean(BUNDLE_IS_FAVORITE);
             mDatabaseId = savedInstanceState.getLong(BUNDLE_DATABASE_ID);
+            mRestaurantPosition = savedInstanceState.getInt(BUNDLE_RESTAURANT_POSITION);
             mViewModel.setIsFavorite(mIsFavorite, this);
         } else {
             mRestaurantId = getIntent().getIntExtra(BUNDLE_RESTAURANT_ID, INVALID_ID);
             mRestaurantName = getIntent().getStringExtra(BUNDLE_RESTAURANT_NAME);
             mRestaurantDetail = getIntent().getParcelableExtra(BUNDLE_RESTAURANT_DETAILS);
+            mRestaurantPosition = getIntent().getIntExtra(BUNDLE_RESTAURANT_POSITION, INVALID_ID);
             mIsFavorite = checkFavorite();
         }
 
@@ -84,6 +102,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         mBinding.unbind();
     }
 
+    /** ACTIVITY EXTENSION METHODS _____________________________________________________________ **/
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -92,6 +112,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         outState.putParcelable(BUNDLE_RESTAURANT_DETAILS, mRestaurantDetail);
         outState.putBoolean(BUNDLE_IS_FAVORITE, mIsFavorite);
         outState.putLong(BUNDLE_DATABASE_ID, mDatabaseId);
+        outState.putInt(BUNDLE_RESTAURANT_POSITION, mRestaurantPosition);
     }
 
     @Override
@@ -104,9 +125,12 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         return super.onOptionsItemSelected(item);
     }
 
+    /** INIT METHODS ___________________________________________________________________________ **/
+
     private void initBinding() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_restaurant_details);
-        mViewModel = new RestaurantDetailsViewModel(this);
+        mViewModel = new RestaurantDetailsViewModel();
+        mViewModel.setListener(this);
         mBinding.setViewModel(mViewModel);
     }
 
@@ -122,9 +146,9 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         }
     }
 
-    private boolean checkFavorite() {
+    /** RESTAURANT DETAIL METHODS ______________________________________________________________ **/
 
-        // TODO: Sugar ORM is not compatible with Instant Run! Instant Run must be disabled first.
+    private boolean checkFavorite() {
         List<FavoriteRestaurant> favoriteRestaurantList = FavoriteRestaurant.listAll(FavoriteRestaurant.class);
         if (favoriteRestaurantList != null && favoriteRestaurantList.size() > 0) {
 
@@ -152,6 +176,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         mViewModel.setRestaurantDetails(imageUrl, tags, status, rating);
         mViewModel.setRestaurantDetailsVisible(true);
     }
+
+    /** NETWORK METHODS ________________________________________________________________________ **/
 
     private void queryRestaurantDetails() {
         RetrofitInterface restaurantDetailsRequest = mRetrofit.create(RetrofitInterface.class);
@@ -182,10 +208,10 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
         });
     }
 
+    /** LISTENER METHODS _______________________________________________________________________ **/
+
     @Override
     public void onAddFavoriteClicked() {
-
-        // TODO: Sugar ORM is not compatible with Instant Run! Instant Run must be disabled first.
         if (mIsFavorite) {
             FavoriteRestaurant favoriteRestaurant = FavoriteRestaurant.findById(FavoriteRestaurant.class, mDatabaseId);
             if (favoriteRestaurant != null) {
@@ -194,6 +220,11 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
             mIsFavorite = false;
             mDatabaseId = INVALID_ID;
             mViewModel.setIsFavorite(false, this);
+
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(BUNDLE_RESTAURANT_POSITION, mRestaurantPosition);
+            setResult(RESULT_FAVORITE_REMOVED, resultIntent);
+
             Log.d(LOG_TAG, "onAddFavoriteClicked(): Removed from favorites.");
         } else {
             FavoriteRestaurant favoriteRestaurant = new FavoriteRestaurant(mRestaurantName, mRestaurantId);
@@ -201,7 +232,12 @@ public class RestaurantDetailsActivity extends AppCompatActivity implements Rest
             mIsFavorite = true;
             mDatabaseId = favoriteRestaurant.getId();
             mViewModel.setIsFavorite(true, this);
+
+            Intent resultIntent = new Intent();
+            setResult(RESULT_FAVORITE_ADDED, resultIntent);
+
             Log.d(LOG_TAG, "onAddFavoriteClicked(): Added to favorites.");
+
         }
     }
 }

@@ -15,6 +15,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Restaurant implements Parcelable {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     @SerializedName("is_time_surging")
     @Expose
     private boolean isTimeSurging;
@@ -139,6 +141,16 @@ public class Restaurant implements Parcelable {
     @Expose
     private Object featuredCategoryDescription;
 
+    /** CONSTRUCTOR METHODS ____________________________________________________________________ **/
+
+    public Restaurant() {}
+
+    public Restaurant(int id) {
+        this.id = id;
+    }
+
+    /** PARCELABLE METHODS _____________________________________________________________________ **/
+
     protected Restaurant(Parcel in) {
         isTimeSurging = in.readByte() != 0;
         deliveryFee = in.readInt();
@@ -181,6 +193,45 @@ public class Restaurant implements Parcelable {
             return new Restaurant[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (isTimeSurging ? 1 : 0));
+        dest.writeInt(deliveryFee);
+        dest.writeInt(maxCompositeScore);
+        dest.writeInt(id);
+        dest.writeDouble(averageRating);
+        dest.writeTypedList(menus);
+        dest.writeInt(compositeScore);
+        dest.writeString(statusType);
+        dest.writeByte((byte) (isOnlyCatering ? 1 : 0));
+        dest.writeString(status);
+        dest.writeInt(numberOfRatings);
+        dest.writeInt(asapTime);
+        dest.writeString(description);
+        dest.writeParcelable(business, flags);
+        dest.writeStringList(tags);
+        dest.writeInt(yelpReviewCount);
+        dest.writeInt(businessId);
+        dest.writeInt(extraSosDeliveryFee);
+        dest.writeDouble(yelpRating);
+        dest.writeString(coverImgUrl);
+        dest.writeString(headerImgUrl);
+        dest.writeParcelable(address, flags);
+        dest.writeInt(priceRange);
+        dest.writeString(slug);
+        dest.writeString(name);
+        dest.writeByte((byte) (isNewlyAdded ? 1 : 0));
+        dest.writeString(url);
+        dest.writeDouble(serviceRate);
+    }
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public boolean isIsTimeSurging() {
         return isTimeSurging;
@@ -428,42 +479,5 @@ public class Restaurant implements Parcelable {
 
     public void setFeaturedCategoryDescription(Object featuredCategoryDescription) {
         this.featuredCategoryDescription = featuredCategoryDescription;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (isTimeSurging ? 1 : 0));
-        dest.writeInt(deliveryFee);
-        dest.writeInt(maxCompositeScore);
-        dest.writeInt(id);
-        dest.writeDouble(averageRating);
-        dest.writeTypedList(menus);
-        dest.writeInt(compositeScore);
-        dest.writeString(statusType);
-        dest.writeByte((byte) (isOnlyCatering ? 1 : 0));
-        dest.writeString(status);
-        dest.writeInt(numberOfRatings);
-        dest.writeInt(asapTime);
-        dest.writeString(description);
-        dest.writeParcelable(business, flags);
-        dest.writeStringList(tags);
-        dest.writeInt(yelpReviewCount);
-        dest.writeInt(businessId);
-        dest.writeInt(extraSosDeliveryFee);
-        dest.writeDouble(yelpRating);
-        dest.writeString(coverImgUrl);
-        dest.writeString(headerImgUrl);
-        dest.writeParcelable(address, flags);
-        dest.writeInt(priceRange);
-        dest.writeString(slug);
-        dest.writeString(name);
-        dest.writeByte((byte) (isNewlyAdded ? 1 : 0));
-        dest.writeString(url);
-        dest.writeDouble(serviceRate);
     }
 }

@@ -14,6 +14,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Menu implements Parcelable {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     @SerializedName("status")
     @Expose
     private String status;
@@ -38,6 +40,8 @@ public class Menu implements Parcelable {
     @Expose
     private String statusType;
 
+    /** PARCELABLE METHODS _____________________________________________________________________ **/
+
     protected Menu(Parcel in) {
         status = in.readString();
         subtitle = in.readString();
@@ -58,6 +62,23 @@ public class Menu implements Parcelable {
             return new Menu[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(status);
+        dest.writeString(subtitle);
+        dest.writeString(name);
+        dest.writeByte((byte) (isCatering ? 1 : 0));
+        dest.writeInt(id);
+        dest.writeString(statusType);
+    }
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public String getStatus() {
         return status;
@@ -105,20 +126,5 @@ public class Menu implements Parcelable {
 
     public void setStatusType(String statusType) {
         this.statusType = statusType;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(status);
-        dest.writeString(subtitle);
-        dest.writeString(name);
-        dest.writeByte((byte) (isCatering ? 1 : 0));
-        dest.writeInt(id);
-        dest.writeString(statusType);
     }
 }

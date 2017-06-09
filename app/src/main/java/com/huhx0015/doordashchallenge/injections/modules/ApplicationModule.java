@@ -12,11 +12,17 @@ import dagger.Provides;
 @Module
 public class ApplicationModule {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     private Application mApplication;
+
+    /** CONSTRUCTOR METHODS ____________________________________________________________________ **/
 
     public ApplicationModule(Application application) {
         mApplication = application;
     }
+
+    /** MODULE METHODS _________________________________________________________________________ **/
 
     @Provides
     @Singleton

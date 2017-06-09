@@ -14,6 +14,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Address implements Parcelable {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     @SerializedName("city")
     @Expose
     private String city;
@@ -58,6 +60,8 @@ public class Address implements Parcelable {
     @Expose
     private String zipCode;
 
+    /** PARCELABLE METHODS _____________________________________________________________________ **/
+
     protected Address(Parcel in) {
         city = in.readString();
         subpremise = in.readString();
@@ -83,6 +87,28 @@ public class Address implements Parcelable {
             return new Address[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(city);
+        dest.writeString(subpremise);
+        dest.writeInt(id);
+        dest.writeString(printableAddress);
+        dest.writeString(state);
+        dest.writeString(street);
+        dest.writeString(country);
+        dest.writeDouble(lat);
+        dest.writeDouble(lng);
+        dest.writeString(shortname);
+        dest.writeString(zipCode);
+    }
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public String getCity() {
         return city;
@@ -170,25 +196,5 @@ public class Address implements Parcelable {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(city);
-        dest.writeString(subpremise);
-        dest.writeInt(id);
-        dest.writeString(printableAddress);
-        dest.writeString(state);
-        dest.writeString(street);
-        dest.writeString(country);
-        dest.writeDouble(lat);
-        dest.writeDouble(lng);
-        dest.writeString(shortname);
-        dest.writeString(zipCode);
     }
 }

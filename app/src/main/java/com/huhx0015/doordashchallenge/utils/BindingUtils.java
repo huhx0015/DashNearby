@@ -11,6 +11,8 @@ import com.squareup.picasso.Picasso;
 
 public class BindingUtils {
 
+    /** BINDING METHODS ________________________________________________________________________ **/
+
     @BindingAdapter({"bind:imageUrl"})
     public static void loadImage(AppCompatImageView view, String imageUrl) {
         Picasso.with(view.getContext())

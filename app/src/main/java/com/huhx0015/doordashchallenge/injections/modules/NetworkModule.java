@@ -4,7 +4,7 @@ import android.app.Application;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
+import com.huhx0015.doordashchallenge.constants.DashConstants;
 import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
@@ -21,16 +21,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class NetworkModule {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     private String mBaseUrl;
+
+    /** CONSTRUCTOR METHODS ____________________________________________________________________ **/
 
     public NetworkModule(String baseUrl) {
         this.mBaseUrl = baseUrl;
     }
 
+    /** MODULE METHODS _________________________________________________________________________ **/
+
     @Provides
     @Singleton
     Cache provideOkHttpCache(Application application) {
-        return new Cache(application.getCacheDir(), RestaurantConstants.HTTP_CLIENT_CACHE);
+        return new Cache(application.getCacheDir(), DashConstants.HTTP_CLIENT_CACHE);
     }
 
     @Provides

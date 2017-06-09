@@ -21,8 +21,12 @@ import static org.hamcrest.Matchers.allOf;
 @RunWith(AndroidJUnit4.class)
 public class RestaurantDetailsActivityTest {
 
+    /**CLASS METHODS ___________________________________________________________________________ **/
+
     @Rule
     public ActivityTestRule<RestaurantDetailsActivity> mActivityTestRule = new ActivityTestRule<>(RestaurantDetailsActivity.class);
+
+    /** TEST METHODS ___________________________________________________________________________ **/
 
     @Test
     public void restaurantDetailsActivityAddFavoritesTest() {
