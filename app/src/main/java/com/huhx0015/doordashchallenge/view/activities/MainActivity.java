@@ -27,6 +27,7 @@ import com.huhx0015.doordashchallenge.databinding.ContentMainBinding;
 import com.huhx0015.doordashchallenge.services.LocationService;
 import com.huhx0015.doordashchallenge.utils.SnackbarUtils;
 import com.huhx0015.doordashchallenge.view.fragments.RestaurantListFragment;
+import com.huhx0015.doordashchallenge.viewmodels.ContentMainViewModel;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -67,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // TAG VARIABLES:
     private String mFragmentTag;
+
+    // VIEWMODEL VARIABLES:
+    private ContentMainViewModel mContentMainViewModel;
 
     /** ACTIVITY LIFECYCLE METHODS _____________________________________________________________ **/
 
@@ -156,6 +160,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mAppBarMainBinding = mActivityMainBinding.appBarMain;
         mContentMainBinding = mAppBarMainBinding.contentMain;
+        mContentMainViewModel = new ContentMainViewModel();
+        mContentMainBinding.setViewModel(mContentMainViewModel);
     }
 
     private void initView() {
@@ -257,11 +263,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.mLatitude = lat;
         this.mLongitude = lng;
 
+        mContentMainViewModel.setProgressBarVisible(false);
         loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, RestaurantConstants.TAG_DISCOVER), RestaurantConstants.TAG_DISCOVER);
     }
 
     @Override
     public void onLocationFailed() {
+        mContentMainViewModel.setProgressBarVisible(false);
         loadDefaultCoordinates(getString(R.string.location_update_failed));
     }
 
@@ -269,12 +277,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     protected void initLocationService() {
-        Log.d(LOG_TAG, "initLocationServices(): Starting location services...");
-
+        mContentMainViewModel.setProgressBarVisible(true);
         mIsLocationPermissionsAsked = true;
 
         Intent intent = new Intent(this, LocationService.class);
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
+
+        Log.d(LOG_TAG, "initLocationServices(): Starting location services...");
     }
 
     @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
