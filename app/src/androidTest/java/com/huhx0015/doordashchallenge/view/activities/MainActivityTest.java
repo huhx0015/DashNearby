@@ -25,8 +25,12 @@ import static org.hamcrest.Matchers.allOf;
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
 
+    /**CLASS METHODS ___________________________________________________________________________ **/
+
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+
+    /** TEST METHODS ___________________________________________________________________________ **/
 
     @Test
     public void mainActivityDrawerTest() {

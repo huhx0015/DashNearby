@@ -9,7 +9,9 @@ import java.util.List;
  * Created by Michael Yoon Huh on 6/1/2017.
  */
 
-public class RestaurantUtils {
+public class FilterUtils {
+
+    /** FILTER METHODS ________________________________________________________________________ **/
 
     public static List<Restaurant> filterRestaurantList(List<Restaurant> restaurantList,
                                                         List<FavoriteRestaurant> favoriteList) {

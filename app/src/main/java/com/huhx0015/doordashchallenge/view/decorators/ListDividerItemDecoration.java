@@ -14,11 +14,17 @@ import com.huhx0015.doordashchallenge.R;
 
 public class ListDividerItemDecoration extends RecyclerView.ItemDecoration {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     private Drawable mDividerLine;
+
+    /** CONSTRUCTOR METHODS ____________________________________________________________________ **/
 
     public ListDividerItemDecoration(Context context) {
         mDividerLine = ContextCompat.getDrawable(context, R.drawable.shape_line_divider);
     }
+
+    /** DECORATOR METHODS ______________________________________________________________________ **/
 
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {

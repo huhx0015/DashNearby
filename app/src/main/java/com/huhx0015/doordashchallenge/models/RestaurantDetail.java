@@ -16,6 +16,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class RestaurantDetail implements Parcelable {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     @SerializedName("phone_number")
     @Expose
     private String phoneNumber;
@@ -168,6 +170,8 @@ public class RestaurantDetail implements Parcelable {
     @Expose
     private Object headerImageUrl;
 
+    /** CONSTRUCTOR METHODS ____________________________________________________________________ **/
+
     public RestaurantDetail(String imageUrl, String name, List<String> tags, String status, int id, int fee) {
         this.coverImgUrl = imageUrl;
         this.name = name;
@@ -176,6 +180,8 @@ public class RestaurantDetail implements Parcelable {
         this.id = id;
         this.deliveryFee = fee;
     }
+
+    /** PARCELABLE METHODS _____________________________________________________________________ **/
 
     protected RestaurantDetail(Parcel in) {
         phoneNumber = in.readString();
@@ -225,6 +231,51 @@ public class RestaurantDetail implements Parcelable {
             return new RestaurantDetail[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(phoneNumber);
+        dest.writeInt(yelpReviewCount);
+        dest.writeInt(deliveryFee);
+        dest.writeInt(maxCompositeScore);
+        dest.writeInt(id);
+        dest.writeDouble(averageRating);
+        dest.writeString(yelpBizId);
+        dest.writeInt(deliveryRadius);
+        dest.writeDouble(inflationRate);
+        dest.writeTypedList(menus);
+        dest.writeByte((byte) (showStoreMenuHeaderPhoto ? 1 : 0));
+        dest.writeInt(compositeScore);
+        dest.writeInt(numberOfRatings);
+        dest.writeString(statusType);
+        dest.writeByte((byte) (isOnlyCatering ? 1 : 0));
+        dest.writeString(status);
+        dest.writeString(objectType);
+        dest.writeString(description);
+        dest.writeParcelable(business, flags);
+        dest.writeStringList(tags);
+        dest.writeInt(asapTime);
+        dest.writeDouble(yelpRating);
+        dest.writeInt(extraSosDeliveryFee);
+        dest.writeInt(businessId);
+        dest.writeString(coverImgUrl);
+        dest.writeParcelable(address, flags);
+        dest.writeInt(priceRange);
+        dest.writeString(slug);
+        dest.writeByte((byte) (showSuggestedItems ? 1 : 0));
+        dest.writeString(name);
+        dest.writeByte((byte) (isUpsellEligible ? 1 : 0));
+        dest.writeByte((byte) (isNewlyAdded ? 1 : 0));
+        dest.writeByte((byte) (isGoodForGroupOrders ? 1 : 0));
+        dest.writeDouble(serviceRate);
+    }
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -528,48 +579,5 @@ public class RestaurantDetail implements Parcelable {
 
     public void setHeaderImageUrl(Object headerImageUrl) {
         this.headerImageUrl = headerImageUrl;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(phoneNumber);
-        dest.writeInt(yelpReviewCount);
-        dest.writeInt(deliveryFee);
-        dest.writeInt(maxCompositeScore);
-        dest.writeInt(id);
-        dest.writeDouble(averageRating);
-        dest.writeString(yelpBizId);
-        dest.writeInt(deliveryRadius);
-        dest.writeDouble(inflationRate);
-        dest.writeTypedList(menus);
-        dest.writeByte((byte) (showStoreMenuHeaderPhoto ? 1 : 0));
-        dest.writeInt(compositeScore);
-        dest.writeInt(numberOfRatings);
-        dest.writeString(statusType);
-        dest.writeByte((byte) (isOnlyCatering ? 1 : 0));
-        dest.writeString(status);
-        dest.writeString(objectType);
-        dest.writeString(description);
-        dest.writeParcelable(business, flags);
-        dest.writeStringList(tags);
-        dest.writeInt(asapTime);
-        dest.writeDouble(yelpRating);
-        dest.writeInt(extraSosDeliveryFee);
-        dest.writeInt(businessId);
-        dest.writeString(coverImgUrl);
-        dest.writeParcelable(address, flags);
-        dest.writeInt(priceRange);
-        dest.writeString(slug);
-        dest.writeByte((byte) (showSuggestedItems ? 1 : 0));
-        dest.writeString(name);
-        dest.writeByte((byte) (isUpsellEligible ? 1 : 0));
-        dest.writeByte((byte) (isNewlyAdded ? 1 : 0));
-        dest.writeByte((byte) (isGoodForGroupOrders ? 1 : 0));
-        dest.writeDouble(serviceRate);
     }
 }

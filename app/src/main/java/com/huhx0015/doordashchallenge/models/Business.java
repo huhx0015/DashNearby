@@ -14,6 +14,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Business implements Parcelable {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     @SerializedName("id")
     @Expose
     private int id;
@@ -21,6 +23,8 @@ public class Business implements Parcelable {
     @SerializedName("name")
     @Expose
     private String name;
+
+    /** PARCELABLE METHODS _____________________________________________________________________ **/
 
     protected Business(Parcel in) {
         id = in.readInt();
@@ -39,6 +43,19 @@ public class Business implements Parcelable {
         }
     };
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+    }
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
+
     public int getId() {
         return id;
     }
@@ -53,16 +70,5 @@ public class Business implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(name);
     }
 }

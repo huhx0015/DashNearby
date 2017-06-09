@@ -3,7 +3,6 @@ package com.huhx0015.doordashchallenge.viewmodels;
 import android.content.Context;
 import android.databinding.BaseObservable;
 import android.view.View;
-
 import com.huhx0015.doordashchallenge.R;
 
 /**
@@ -11,6 +10,8 @@ import com.huhx0015.doordashchallenge.R;
  */
 
 public class RestaurantDetailsViewModel extends BaseObservable {
+
+    /** CLASS VARIABLES ________________________________________________________________________ **/
 
     private RestaurantDetailsViewModelListener mListener;
 
@@ -24,15 +25,15 @@ public class RestaurantDetailsViewModel extends BaseObservable {
     private String mFee;
     private String mFavoriteButtonText;
 
-    public RestaurantDetailsViewModel(RestaurantDetailsViewModelListener listener) {
-        this.mListener = listener;
-    }
+    /** CLICK METHODS __________________________________________________________________________ **/
 
     public void onClickAddFavorite(View view) {
         if (mListener != null) {
             mListener.onAddFavoriteClicked();
         }
     }
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public boolean getRestaurantDetailsVisible() {
         return mRestaurantDetailsVisibility;
@@ -97,6 +98,12 @@ public class RestaurantDetailsViewModel extends BaseObservable {
         }
         notifyChange();
     }
+
+    public void setListener(RestaurantDetailsViewModelListener listener) {
+        this.mListener = listener;
+    }
+
+    /** INTERFACE METHODS ______________________________________________________________________ **/
 
     public interface RestaurantDetailsViewModelListener {
         void onAddFavoriteClicked();

@@ -9,6 +9,8 @@ import java.util.List;
 
 public class TagsUtils {
 
+    /** TAG METHODS ____________________________________________________________________________ **/
+
     public static String formatTags(@NonNull List<String> tagList) {
         StringBuilder tagBuilder = new StringBuilder();
 
