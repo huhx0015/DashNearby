@@ -11,6 +11,11 @@ public class RestaurantConstants {
     // HTTP VARIABLES:
     public static final String API_URL = "https://api.doordash.com/";
     public static final int HTTP_CLIENT_CACHE = 10 * 1024 * 1024;
+    public static final int HTTP_BAD_REQUEST = 400;
+    public static final int HTTP_UNAUTHORIZED = 401;
+    public static final int HTTP_FORBIDDEN = 403;
+
+    public static final String TOKEN_ID = "JWT ";
 
     // LOCATION VARIABLES:
     public static final double DOORDASH_LAT = 37.422740;
