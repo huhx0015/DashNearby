@@ -22,6 +22,12 @@ public class LoginActivityViewModel extends BaseObservable {
         }
     }
 
+    public void onClickSkipButton(View view) {
+        if (mListener != null) {
+            mListener.onSkipLoginButtonClicked();
+        }
+    }
+
     /** GET / SET METHODS ______________________________________________________________________ **/
 
     public boolean getLoginFieldVisibility() {
@@ -50,5 +56,6 @@ public class LoginActivityViewModel extends BaseObservable {
 
     public interface LoginActivityViewModelListener {
         void onLoginButtonClicked();
+        void onSkipLoginButtonClicked();
     }
 }

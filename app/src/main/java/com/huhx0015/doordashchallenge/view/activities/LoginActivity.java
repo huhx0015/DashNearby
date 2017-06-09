@@ -11,7 +11,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import com.huhx0015.doordashchallenge.R;
-import com.huhx0015.doordashchallenge.data.RestaurantPreferences;
+import com.huhx0015.doordashchallenge.data.DashPreferences;
 import com.huhx0015.doordashchallenge.api.RetrofitInterface;
 import com.huhx0015.doordashchallenge.application.RestaurantApplication;
 import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
     }
 
     private void initLoginState() {
-        String token = RestaurantPreferences.getAuthToken(this);
+        String token = DashPreferences.getAuthToken(this);
         if (token != null) {
             getUserData(token);
         } else {
@@ -158,7 +158,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
                     Token token = response.body();
 
                     if (token != null && token.token != null) {
-                        RestaurantPreferences.setAuthToken(token.token, LoginActivity.this);
+                        DashPreferences.setAuthToken(token.token, LoginActivity.this);
                         getUserData(token.token);
                     } else{
                         handleError(getString(R.string.login_error));
@@ -167,7 +167,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
                     if (response.code() == RestaurantConstants.HTTP_BAD_REQUEST) {
                         handleError(getString(R.string.login_wrong_credentials));
                     } else if (response.code() == RestaurantConstants.HTTP_FORBIDDEN) {
-                        String previousToken = RestaurantPreferences.getAuthToken(LoginActivity.this);
+                        String previousToken = DashPreferences.getAuthToken(LoginActivity.this);
                         if (previousToken != null) {
                             refreshToken(previousToken);
                         } else {
@@ -202,8 +202,9 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
                     }
                 } else {
                     if (response.code() == RestaurantConstants.HTTP_UNAUTHORIZED) {
-                        String previousToken = RestaurantPreferences.getAuthToken(LoginActivity.this);
+                        String previousToken = DashPreferences.getAuthToken(LoginActivity.this);
                         if (previousToken != null) {
+                            DashPreferences.setAuthToken(null, LoginActivity.this);
                             refreshToken(previousToken);
                         } else {
                             handleError(getString(R.string.login_error));
@@ -231,7 +232,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
                     Token token = response.body();
 
                     if (token != null && token.token != null) {
-                        RestaurantPreferences.setAuthToken(token.token, LoginActivity.this);
+                        DashPreferences.setAuthToken(token.token, LoginActivity.this);
                         getUserData(token.token);
                     } else{
                         handleError(getString(R.string.login_error));
@@ -257,5 +258,10 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
     @Override
     public void onLoginButtonClicked() {
         getAuthToken();
+    }
+
+    @Override
+    public void onSkipLoginButtonClicked() {
+        launchMainActivity();
     }
 }
