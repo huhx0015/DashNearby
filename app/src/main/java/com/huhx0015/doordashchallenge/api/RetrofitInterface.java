@@ -15,6 +15,8 @@ import retrofit2.http.QueryMap;
 
 public interface RetrofitInterface {
 
+    /** RETROFIT CALL METHODS __________________________________________________________________ **/
+
     @GET("v2/restaurant/")
     Call<List<Restaurant>> getRestaurantList(@QueryMap Map<String, String> params);
 

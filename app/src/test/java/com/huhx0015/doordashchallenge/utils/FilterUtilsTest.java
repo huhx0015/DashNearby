@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
  * Created by Michael Yoon Huh on 6/7/2017.
  */
 
-public class RestaurantUtilsTest {
+public class FilterUtilsTest {
 
     @Test
     public void testFilterRestaurantList() throws Exception {
@@ -32,7 +32,7 @@ public class RestaurantUtilsTest {
         testExpectedList.add(new Restaurant(5));
         testExpectedList.add(new Restaurant(7));
 
-        List<Restaurant> testResultList = RestaurantUtils.filterRestaurantList(testRestaurantList, testFavoriteList);
+        List<Restaurant> testResultList = FilterUtils.filterRestaurantList(testRestaurantList, testFavoriteList);
 
         for (int x = 0; x < testExpectedList.size(); x++) {
             int expectedId = testExpectedList.get(x).getId();

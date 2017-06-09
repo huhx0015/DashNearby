@@ -22,13 +22,19 @@ import java.util.List;
 
 public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.RestaurantListViewHolder> {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     private Context mContext;
     private List<Restaurant> mRestaurantList;
+
+    /** CONSTRUCTOR METHODS ____________________________________________________________________ **/
 
     public RestaurantListAdapter(List<Restaurant> restaurant, Context context) {
         this.mRestaurantList = restaurant;
         this.mContext = context;
     }
+
+    /** ADAPTER METHODS ________________________________________________________________________ **/
 
     @Override
     public RestaurantListAdapter.RestaurantListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -82,6 +88,14 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         }
     }
 
+    /** DATA METHODS ___________________________________________________________________________ **/
+
+    public void updateRestaurantList(List<Restaurant> updatedList) {
+        this.mRestaurantList = updatedList;
+    }
+
+    /** INTENT METHODS _________________________________________________________________________ **/
+
     private void launchRestaurantDetailsIntent(int id, String name, RestaurantDetail details) {
         Intent restaurantDetailsIntent = new Intent(mContext, RestaurantDetailsActivity.class);
         Bundle bundle = new Bundle();
@@ -92,18 +106,22 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         mContext.startActivity(restaurantDetailsIntent);
     }
 
-    public void updateRestaurantList(List<Restaurant> updatedList) {
-        this.mRestaurantList = updatedList;
-    }
+    /** VIEWHOLDER CLASS _______________________________________________________________________ **/
 
     static class RestaurantListViewHolder extends RecyclerView.ViewHolder {
 
+        /** CLASS VARIABLES ____________________________________________________________________ **/
+
         private AdapterRestaurantListBinding mBinding;
+
+        /** CONSTRUCTOR METHODS ________________________________________________________________ **/
 
         RestaurantListViewHolder(AdapterRestaurantListBinding binding) {
             super(binding.getRoot());
             this.mBinding = binding;
         }
+
+        /** BIND METHODS _______________________________________________________________________ **/
 
         private void bindView(String imageUrl, String name, String categories, String distance,
                               RestaurantListAdapterViewModel.RestaurantListAdapterViewModelListener listener) {

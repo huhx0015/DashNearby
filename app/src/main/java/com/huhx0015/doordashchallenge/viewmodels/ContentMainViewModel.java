@@ -8,7 +8,11 @@ import android.databinding.BaseObservable;
 
 public class ContentMainViewModel extends BaseObservable {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     private boolean mProgressBarVisibility = false;
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public boolean getProgressBarVisible() {
         return mProgressBarVisibility;

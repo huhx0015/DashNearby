@@ -14,17 +14,19 @@ import com.orm.SugarContext;
 
 public class RestaurantApplication extends Application {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
+    // COMPONENT VARIABLES:
     private NetworkComponent mNetworkComponent;
+
+    /** APPLICATION METHODS ____________________________________________________________________ **/
 
     @Override
     public void onCreate() {
         super.onCreate();
         SugarContext.init(this);
 
-        mNetworkComponent = DaggerNetworkComponent.builder()
-                .applicationModule(new ApplicationModule(this))
-                .networkModule(new NetworkModule(RestaurantConstants.API_URL))
-                .build();
+        initNetworkComponent();
     }
 
     @Override
@@ -32,6 +34,17 @@ public class RestaurantApplication extends Application {
         super.onTerminate();
         SugarContext.terminate();
     }
+
+    /** INIT MEHODS ____________________________________________________________________________ **/
+
+    private void initNetworkComponent() {
+        mNetworkComponent = DaggerNetworkComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .networkModule(new NetworkModule(RestaurantConstants.API_URL))
+                .build();
+    }
+
+    /** GET METHODS ____________________________________________________________________________ **/
 
     public NetworkComponent getNetworkComponent() {
         return mNetworkComponent;

@@ -21,11 +21,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class NetworkModule {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     private String mBaseUrl;
+
+    /** CONSTRUCTOR METHODS ____________________________________________________________________ **/
 
     public NetworkModule(String baseUrl) {
         this.mBaseUrl = baseUrl;
     }
+
+    /** MODULE METHODS _________________________________________________________________________ **/
 
     @Provides
     @Singleton

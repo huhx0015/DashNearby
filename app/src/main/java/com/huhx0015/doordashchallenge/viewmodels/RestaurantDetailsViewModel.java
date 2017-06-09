@@ -11,6 +11,8 @@ import com.huhx0015.doordashchallenge.R;
 
 public class RestaurantDetailsViewModel extends BaseObservable {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     private RestaurantDetailsViewModelListener mListener;
 
     private boolean mRestaurantDetailsVisibility = false;
@@ -23,11 +25,15 @@ public class RestaurantDetailsViewModel extends BaseObservable {
     private String mFee;
     private String mFavoriteButtonText;
 
+    /** CLICK METHODS __________________________________________________________________________ **/
+
     public void onClickAddFavorite(View view) {
         if (mListener != null) {
             mListener.onAddFavoriteClicked();
         }
     }
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public boolean getRestaurantDetailsVisible() {
         return mRestaurantDetailsVisibility;
@@ -96,6 +102,8 @@ public class RestaurantDetailsViewModel extends BaseObservable {
     public void setListener(RestaurantDetailsViewModelListener listener) {
         this.mListener = listener;
     }
+
+    /** INTERFACE METHODS ______________________________________________________________________ **/
 
     public interface RestaurantDetailsViewModelListener {
         void onAddFavoriteClicked();

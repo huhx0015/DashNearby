@@ -8,6 +8,8 @@ import android.databinding.BaseObservable;
 
 public class RestaurantListViewModel extends BaseObservable {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     private boolean mRestaurantListVisibility = false;
     private boolean mProgressBarVisibility = false;
     private boolean mErrorVisibility = false;

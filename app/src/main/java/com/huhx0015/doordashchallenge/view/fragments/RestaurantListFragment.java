@@ -17,7 +17,7 @@ import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
 import com.huhx0015.doordashchallenge.databinding.FragmentRestaurantListBinding;
 import com.huhx0015.doordashchallenge.entities.FavoriteRestaurant;
 import com.huhx0015.doordashchallenge.models.Restaurant;
-import com.huhx0015.doordashchallenge.utils.RestaurantUtils;
+import com.huhx0015.doordashchallenge.utils.FilterUtils;
 import com.huhx0015.doordashchallenge.view.adapters.RestaurantListAdapter;
 import com.huhx0015.doordashchallenge.view.decorators.ListDividerItemDecoration;
 import com.huhx0015.doordashchallenge.viewmodels.RestaurantListViewModel;
@@ -167,10 +167,10 @@ public class RestaurantListFragment extends Fragment {
 
         RestaurantListScrollListener mScrollListener = new RestaurantListScrollListener(mLayoutManager) {
             @Override
-            public void onLoadMore(int current_page) {
+            public void onLoadMore(int currentPage) {
                 if (!mTag.equals(RestaurantConstants.TAG_FAVORITES) && !mIsEndOfList) {
                     queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
-                            current_page * LIST_ITEM_LIMIT, LIST_ITEM_LIMIT);
+                            currentPage * LIST_ITEM_LIMIT, LIST_ITEM_LIMIT);
                 }
             }
         };
@@ -197,7 +197,7 @@ public class RestaurantListFragment extends Fragment {
     private void filterList() {
         List<FavoriteRestaurant> favoriteRestaurantList = FavoriteRestaurant.listAll(FavoriteRestaurant.class);
         if (favoriteRestaurantList != null && favoriteRestaurantList.size() > 0) {
-            mRestaurantList = RestaurantUtils.filterRestaurantList(mRestaurantList, favoriteRestaurantList);
+            mRestaurantList = FilterUtils.filterRestaurantList(mRestaurantList, favoriteRestaurantList);
         } else {
             mRestaurantList.clear();
         }
