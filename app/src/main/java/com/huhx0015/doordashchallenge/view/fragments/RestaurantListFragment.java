@@ -33,41 +33,50 @@ import retrofit2.Retrofit;
 
 /**
  * Created by Michael Yoon Huh on 6/1/2017.
- *
- *  TODO: Sugar ORM is not compatible with Instant Run! Instant Run must be disabled first.
- *  SEE HERE: https://stackoverflow.com/questions/33031570/android-sugar-orm-no-such-table-exception
  */
 
 public class RestaurantListFragment extends Fragment {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
+    // DATABINDING VARIABLES:
+    private FragmentRestaurantListBinding mBinding;
+    private RestaurantListViewModel mViewModel;
+
+    // FRAGMENT VARIABLES:
+    private RestaurantListAdapter mAdapter;
+    private String mTag;
+
+    // LOGGING VARIABLES:
     private static final String LOG_TAG = RestaurantListFragment.class.getSimpleName();
 
+    // INSTANCE VARIABLES:
     private static final String INSTANCE_RESTAURANT_LIST = LOG_TAG + "_INSTANCE_RESTAURANT_LIST";
     private static final String INSTANCE_TAG = LOG_TAG + "_INSTANCE_TAG";
     private static final String INSTANCE_LATITUDE = LOG_TAG + "_INSTANCE_LATITUDE";
     private static final String INSTANCE_LONGITUDE = LOG_TAG + "_INSTANCE_LONGITUDE";
     private static final String INSTANCE_END_OF_LIST = LOG_TAG + "_INSTANCE_END_OF_LIST";
 
-    private static final int LIST_ITEM_LIMIT = 10;
-    private static final String TAG_FAVORITES = "TAG_FAVORITES";
-
+    // LOCATION VARIABLES:
     private double mLatitude;
     private double mLongitude;
 
+    // QUERY VARIABLES:
     private static final String QUERY_LAT = "lat";
     private static final String QUERY_LNG = "lng";
     private static final String QUERY_OFFSET = "offset";
     private static final String QUERY_LIMIT = "limit";
 
+    // RESTAURANT LIST VARIABLES:
+    private static final int LIST_START_POSITION = 0;
+    private static final int LIST_ITEM_LIMIT = 10;
     private boolean mIsEndOfList = false;
-    private FragmentRestaurantListBinding mBinding;
     private List<Restaurant> mRestaurantList;
-    private RestaurantListAdapter mAdapter;
-    private RestaurantListViewModel mViewModel;
-    private String mTag;
 
-    @Inject
-    Retrofit mRetrofit;
+    // RETROFIT VARIABLES:
+    @Inject Retrofit mRetrofit;
+
+    /** CONSTRUCTOR METHODS ____________________________________________________________________ **/
 
     public static RestaurantListFragment newInstance(double lat, double lng, String tag) {
         RestaurantListFragment fragment = new RestaurantListFragment();
@@ -76,6 +85,8 @@ public class RestaurantListFragment extends Fragment {
         fragment.mTag = tag;
         return fragment;
     }
+
+    /** FRAGMENT LIFECYCLE METHODS _____________________________________________________________ **/
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,7 +98,6 @@ public class RestaurantListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         initBinding();
         initView();
 
@@ -101,14 +111,10 @@ public class RestaurantListFragment extends Fragment {
             if (mRestaurantList != null && mRestaurantList.size() > 0) {
                 setRecyclerView();
             } else {
-                mIsEndOfList = false;
-                queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
-                        0, LIST_ITEM_LIMIT);
+                initList();
             }
         } else {
-            mIsEndOfList = false;
-            queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
-                    0, LIST_ITEM_LIMIT);
+            initList();
         }
 
         return mBinding.getRoot();
@@ -117,8 +123,11 @@ public class RestaurantListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mBinding.fragmentRestaurantRecyclerView.setAdapter(null);
         mBinding.unbind();
     }
+
+    /** FRAGMENT EXTENSION METHODS _____________________________________________________________ **/
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -127,11 +136,13 @@ public class RestaurantListFragment extends Fragment {
         outState.putBoolean(INSTANCE_END_OF_LIST, mIsEndOfList);
         outState.putDouble(INSTANCE_LATITUDE, mLatitude);
         outState.putDouble(INSTANCE_LONGITUDE, mLongitude);
-        
+
         if (mRestaurantList != null) {
             outState.putParcelableArrayList(INSTANCE_RESTAURANT_LIST, new ArrayList<>(mRestaurantList));
         }
     }
+
+    /** INIT METHODS ___________________________________________________________________________ **/
 
     private void initBinding() {
         mBinding = DataBindingUtil.inflate(getActivity().getLayoutInflater(), R.layout.fragment_restaurant_list, null, false);
@@ -157,7 +168,7 @@ public class RestaurantListFragment extends Fragment {
         RestaurantListScrollListener mScrollListener = new RestaurantListScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int current_page) {
-                if (!mTag.equals(TAG_FAVORITES) && !mIsEndOfList) {
+                if (!mTag.equals(RestaurantConstants.TAG_FAVORITES) && !mIsEndOfList) {
                     queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
                             current_page * LIST_ITEM_LIMIT, LIST_ITEM_LIMIT);
                 }
@@ -175,6 +186,14 @@ public class RestaurantListFragment extends Fragment {
         mBinding.fragmentRestaurantRecyclerView.setAdapter(mAdapter);
     }
 
+    /** RESTAURANT LIST METHODS ________________________________________________________________ **/
+
+    private void initList() {
+        mIsEndOfList = false;
+        queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
+                LIST_START_POSITION, LIST_ITEM_LIMIT);
+    }
+
     private void filterList() {
         List<FavoriteRestaurant> favoriteRestaurantList = FavoriteRestaurant.listAll(FavoriteRestaurant.class);
         if (favoriteRestaurantList != null && favoriteRestaurantList.size() > 0) {
@@ -184,10 +203,12 @@ public class RestaurantListFragment extends Fragment {
         }
     }
 
-    private void updateList(List<Restaurant> updatedList, final int rangePosition) {
+    private void updateList(List<Restaurant> updatedList) {
         mAdapter.updateRestaurantList(updatedList);
-        mAdapter.notifyItemRangeInserted(rangePosition, mRestaurantList.size() - 1);
+        mAdapter.notifyDataSetChanged();
     }
+
+    /** NETWORK METHODS ________________________________________________________________________ **/
 
     private void queryRestaurantList(Double lat, Double lng, final Integer offset, Integer limit) {
         RetrofitInterface restaurantListRequest = mRetrofit.create(RetrofitInterface.class);
@@ -197,7 +218,7 @@ public class RestaurantListFragment extends Fragment {
             requestParams.put(QUERY_LAT, String.valueOf(lat));
             requestParams.put(QUERY_LNG, String.valueOf(lng));
         }
-        if (!mTag.equals(TAG_FAVORITES) && offset != null && limit != null) {
+        if (!mTag.equals(RestaurantConstants.TAG_FAVORITES) && offset != null && limit != null) {
             requestParams.put(QUERY_OFFSET, String.valueOf(offset));
             requestParams.put(QUERY_LIMIT, String.valueOf(limit));
         }
@@ -228,18 +249,18 @@ public class RestaurantListFragment extends Fragment {
 
                         // If returned list is less than the item limit, the last page of
                         // restaurants have been reached.
-                        if (updatedRestaurantList.size() < LIST_ITEM_LIMIT - 1) {
+                        if (updatedRestaurantList.size() < LIST_ITEM_LIMIT - 2) {
                             mIsEndOfList = true;
                         }
                     }
 
                     // Filters the list if currently in "Favorites" view mode.
-                    if (mTag.equals(TAG_FAVORITES)) {
+                    if (mTag.equals(RestaurantConstants.TAG_FAVORITES)) {
                         filterList();
                     }
 
                     if (mRestaurantList != null && mRestaurantList.size() > 0) {
-                        updateList(mRestaurantList, offset + 1);
+                        updateList(mRestaurantList);
                     } else {
                         mViewModel.setRestaurantListVisible(false);
                         mViewModel.setErrorVisibility(true);
