@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class District {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     @SerializedName("shortname")
     @Expose
     private String shortname;
@@ -18,6 +20,8 @@ public class District {
     @SerializedName("name")
     @Expose
     private String name;
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public String getShortname() {
         return shortname;

@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Token {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     @SerializedName("token")
     @Expose
     public String token;

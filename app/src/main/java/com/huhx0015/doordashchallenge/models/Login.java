@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Login {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     @SerializedName("email")
     @Expose
     private String email;
@@ -21,6 +23,8 @@ public class Login {
         this.email = email;
         this.password = password;
     }
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public String getEmail() {
         return email;

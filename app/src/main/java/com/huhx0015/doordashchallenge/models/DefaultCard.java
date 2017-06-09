@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class DefaultCard {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     @SerializedName("exp_month")
     @Expose
     private String expMonth;
@@ -36,6 +38,8 @@ public class DefaultCard {
     @SerializedName("id")
     @Expose
     private int id;
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public String getExpMonth() {
         return expMonth;

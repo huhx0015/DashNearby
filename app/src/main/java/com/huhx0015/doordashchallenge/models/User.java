@@ -1,4 +1,3 @@
-
 package com.huhx0015.doordashchallenge.models;
 
 import java.util.List;
@@ -6,6 +5,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
+
+    /** CLASS VARIABLES ________________________________________________________________________ **/
 
     @SerializedName("last_name")
     @Expose
@@ -85,6 +86,8 @@ public class User {
     @SerializedName("default_substitution_preference")
     @Expose
     private String defaultSubstitutionPreference;
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public String getLastName() {
         return lastName;

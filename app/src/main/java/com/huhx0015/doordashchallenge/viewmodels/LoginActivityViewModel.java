@@ -9,6 +9,8 @@ import android.view.View;
 
 public class LoginActivityViewModel extends BaseObservable {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     private boolean mLoginFieldVisibility = false;
     private boolean mProgressBarVisibility = false;
 
@@ -19,6 +21,8 @@ public class LoginActivityViewModel extends BaseObservable {
             mListener.onLoginButtonClicked();
         }
     }
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public boolean getLoginFieldVisibility() {
         return mLoginFieldVisibility;
@@ -41,6 +45,8 @@ public class LoginActivityViewModel extends BaseObservable {
     public void setListener(LoginActivityViewModelListener listener) {
         this.mListener = listener;
     }
+
+    /** INTERFACE METHODS ______________________________________________________________________ **/
 
     public interface LoginActivityViewModelListener {
         void onLoginButtonClicked();

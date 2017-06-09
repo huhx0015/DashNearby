@@ -1,10 +1,11 @@
-
 package com.huhx0015.doordashchallenge.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class DefaultAddress {
+
+    /** CLASS VARIABLES ________________________________________________________________________ **/
 
     @SerializedName("city")
     @Expose
@@ -60,6 +61,8 @@ public class DefaultAddress {
     @SerializedName("zip_code")
     @Expose
     private String zipCode;
+
+    /** GET / SET METHODS ______________________________________________________________________ **/
 
     public String getCity() {
         return city;
