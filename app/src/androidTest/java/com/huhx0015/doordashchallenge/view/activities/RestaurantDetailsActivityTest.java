@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.allOf;
 public class RestaurantDetailsActivityTest {
 
     /**CLASS METHODS ___________________________________________________________________________ **/
-    
+
     @Rule
     public ActivityTestRule<RestaurantDetailsActivity> mActivityTestRule = new ActivityTestRule<>(RestaurantDetailsActivity.class);
 
