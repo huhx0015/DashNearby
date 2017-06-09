@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActivityMainBinding mActivityMainBinding;
     private AppBarMainBinding mAppBarMainBinding;
     private ContentMainBinding mContentMainBinding;
+    private ContentMainViewModel mContentMainViewModel;
 
     // LOCATION VARIABLES:
     private double mLatitude = DashConstants.DOORDASH_LAT;
@@ -68,9 +69,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // TAG VARIABLES:
     private String mFragmentTag;
-
-    // VIEWMODEL VARIABLES:
-    private ContentMainViewModel mContentMainViewModel;
 
     /** ACTIVITY LIFECYCLE METHODS _____________________________________________________________ **/
 

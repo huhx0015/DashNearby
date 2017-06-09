@@ -40,7 +40,7 @@ dependencies {
 
     // GOOGLE PLAY SERVICE LIBRARIES:
     compile 'com.google.android.gms:play-services-location:10.2.6'
-    
+
     // DATABASE LIBRARIES:
     compile 'com.github.satyan:sugar:1.5'
 

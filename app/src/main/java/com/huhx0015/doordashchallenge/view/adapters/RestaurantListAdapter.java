@@ -1,9 +1,7 @@
 package com.huhx0015.doordashchallenge.view.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -12,7 +10,7 @@ import com.huhx0015.doordashchallenge.databinding.AdapterRestaurantListBinding;
 import com.huhx0015.doordashchallenge.models.Restaurant;
 import com.huhx0015.doordashchallenge.models.RestaurantDetail;
 import com.huhx0015.doordashchallenge.utils.TagsUtils;
-import com.huhx0015.doordashchallenge.view.activities.RestaurantDetailsActivity;
+import com.huhx0015.doordashchallenge.view.listeners.RestaurantListAdapterListener;
 import com.huhx0015.doordashchallenge.viewmodels.RestaurantListAdapterViewModel;
 import java.util.List;
 
@@ -26,11 +24,14 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     private Context mContext;
     private List<Restaurant> mRestaurantList;
+    private RestaurantListAdapterListener mListener;
 
     /** CONSTRUCTOR METHODS ____________________________________________________________________ **/
 
-    public RestaurantListAdapter(List<Restaurant> restaurant, Context context) {
+    public RestaurantListAdapter(List<Restaurant> restaurant, RestaurantListAdapterListener listener,
+                                 Context context) {
         this.mRestaurantList = restaurant;
+        this.mListener = listener;
         this.mContext = context;
     }
 
@@ -44,7 +45,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
     }
 
     @Override
-    public void onBindViewHolder(RestaurantListAdapter.RestaurantListViewHolder holder, int position) {
+    public void onBindViewHolder(RestaurantListAdapter.RestaurantListViewHolder holder, final int position) {
         final int id = mRestaurantList.get(position).getId();
         final String imageUrl = mRestaurantList.get(position).getCoverImgUrl();
         final String name = mRestaurantList.get(position).getName();
@@ -61,7 +62,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
             @Override
             public void onRowClicked() {
                 RestaurantDetail details = new RestaurantDetail(imageUrl, name, tagList, status, id, fee);
-                launchRestaurantDetailsIntent(id, name, details);
+                mListener.onRestaurantClicked(id, position, name, details);
             }
         });
     }
@@ -92,18 +93,6 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     public void updateRestaurantList(List<Restaurant> updatedList) {
         this.mRestaurantList = updatedList;
-    }
-
-    /** INTENT METHODS _________________________________________________________________________ **/
-
-    private void launchRestaurantDetailsIntent(int id, String name, RestaurantDetail details) {
-        Intent restaurantDetailsIntent = new Intent(mContext, RestaurantDetailsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(RestaurantDetailsActivity.BUNDLE_RESTAURANT_ID, id);
-        bundle.putString(RestaurantDetailsActivity.BUNDLE_RESTAURANT_NAME, name);
-        bundle.putParcelable(RestaurantDetailsActivity.BUNDLE_RESTAURANT_DETAILS, details);
-        restaurantDetailsIntent.putExtras(bundle);
-        mContext.startActivity(restaurantDetailsIntent);
     }
 
     /** VIEWHOLDER CLASS _______________________________________________________________________ **/

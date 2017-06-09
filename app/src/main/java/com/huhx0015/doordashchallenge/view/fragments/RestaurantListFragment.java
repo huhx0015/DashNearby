@@ -1,5 +1,6 @@
 package com.huhx0015.doordashchallenge.view.fragments;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.huhx0015.doordashchallenge.R;
+import com.huhx0015.doordashchallenge.models.RestaurantDetail;
+import com.huhx0015.doordashchallenge.view.activities.RestaurantDetailsActivity;
+import com.huhx0015.doordashchallenge.view.listeners.RestaurantListAdapterListener;
 import com.huhx0015.doordashchallenge.view.listeners.RestaurantListScrollListener;
 import com.huhx0015.doordashchallenge.api.RetrofitInterface;
 import com.huhx0015.doordashchallenge.application.DashApplication;
@@ -35,7 +39,7 @@ import retrofit2.Retrofit;
  * Created by Michael Yoon Huh on 6/1/2017.
  */
 
-public class RestaurantListFragment extends Fragment {
+public class RestaurantListFragment extends Fragment implements RestaurantListAdapterListener {
 
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
@@ -130,6 +134,29 @@ public class RestaurantListFragment extends Fragment {
     /** FRAGMENT EXTENSION METHODS _____________________________________________________________ **/
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (mTag.equals(DashConstants.TAG_FAVORITES) &&
+                resultCode == RestaurantDetailsActivity.RESULT_FAVORITE_REMOVED &&
+                requestCode == RestaurantDetailsActivity.REQUEST_RESTAURANT_DETAILS) {
+
+            int positionToRemove = data.getIntExtra(RestaurantDetailsActivity.BUNDLE_RESTAURANT_POSITION, -1);
+            if (positionToRemove > -1) {
+                mRestaurantList.remove(positionToRemove);
+                mAdapter.updateRestaurantList(mRestaurantList);
+
+                if (mRestaurantList.size() > 0) {
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    mViewModel.setRestaurantListVisible(false);
+                    mViewModel.setErrorVisibility(true);
+                }
+            }
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(INSTANCE_TAG, mTag);
@@ -181,7 +208,7 @@ public class RestaurantListFragment extends Fragment {
 
     private void setRecyclerView() {
         mViewModel.setRestaurantListVisible(true);
-        mAdapter = new RestaurantListAdapter(mRestaurantList, getContext());
+        mAdapter = new RestaurantListAdapter(mRestaurantList, this, getContext());
         mAdapter.setHasStableIds(true);
         mBinding.fragmentRestaurantRecyclerView.setAdapter(mAdapter);
     }
@@ -206,6 +233,19 @@ public class RestaurantListFragment extends Fragment {
     private void updateList(List<Restaurant> updatedList) {
         mAdapter.updateRestaurantList(updatedList);
         mAdapter.notifyDataSetChanged();
+    }
+
+    /** INTENT METHODS _________________________________________________________________________ **/
+
+    private void launchRestaurantDetailsIntent(int id, int position, String name, RestaurantDetail details) {
+        Intent restaurantDetailsIntent = new Intent(getContext(), RestaurantDetailsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(RestaurantDetailsActivity.BUNDLE_RESTAURANT_ID, id);
+        bundle.putString(RestaurantDetailsActivity.BUNDLE_RESTAURANT_NAME, name);
+        bundle.putParcelable(RestaurantDetailsActivity.BUNDLE_RESTAURANT_DETAILS, details);
+        bundle.putInt(RestaurantDetailsActivity.BUNDLE_RESTAURANT_POSITION, position);
+        restaurantDetailsIntent.putExtras(bundle);
+        startActivityForResult(restaurantDetailsIntent, RestaurantDetailsActivity.REQUEST_RESTAURANT_DETAILS);
     }
 
     /** NETWORK METHODS ________________________________________________________________________ **/
@@ -278,5 +318,12 @@ public class RestaurantListFragment extends Fragment {
                 Log.e(LOG_TAG, "ERROR: onFailure(): Restaurant list query failed: " + t.getLocalizedMessage());
             }
         });
+    }
+
+    /** LISTENER METHODS _______________________________________________________________________ **/
+
+    @Override
+    public void onRestaurantClicked(int id, int position, String name, RestaurantDetail details) {
+        launchRestaurantDetailsIntent(id, position, name, details);
     }
 }
