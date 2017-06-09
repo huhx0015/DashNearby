@@ -139,6 +139,12 @@ public class Restaurant implements Parcelable {
     @Expose
     private Object featuredCategoryDescription;
 
+    public Restaurant() {}
+
+    public Restaurant(int id) {
+        this.id = id;
+    }
+
     protected Restaurant(Parcel in) {
         isTimeSurging = in.readByte() != 0;
         deliveryFee = in.readInt();

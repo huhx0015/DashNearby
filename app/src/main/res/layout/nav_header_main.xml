@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:text="@string/title_doordash"
+            android:text="@string/title_drawer"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 

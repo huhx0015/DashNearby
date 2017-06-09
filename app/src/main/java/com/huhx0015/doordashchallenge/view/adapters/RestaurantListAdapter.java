@@ -108,7 +108,8 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         private void bindView(String imageUrl, String name, String categories, String distance,
                               RestaurantListAdapterViewModel.RestaurantListAdapterViewModelListener listener) {
             RestaurantListAdapterViewModel viewModel = new RestaurantListAdapterViewModel(imageUrl,
-                    name, categories, distance, listener);
+                    name, categories, distance);
+            viewModel.setListener(listener);
             mBinding.setViewModel(viewModel);
         }
     }

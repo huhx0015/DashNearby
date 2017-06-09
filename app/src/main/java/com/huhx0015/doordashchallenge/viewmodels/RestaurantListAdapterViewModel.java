@@ -18,13 +18,13 @@ public class RestaurantListAdapterViewModel extends BaseObservable {
     private String mTags;
     private String mStatus;
 
-    public RestaurantListAdapterViewModel(String imageUrl, String name, String tags, String status,
-                                          RestaurantListAdapterViewModelListener listener) {
+    public RestaurantListAdapterViewModel() {}
+
+    public RestaurantListAdapterViewModel(String imageUrl, String name, String tags, String status) {
         this.mImageUrl = imageUrl;
         this.mName = name;
         this.mTags = tags;
         this.mStatus = status;
-        this.mListener = listener;
     }
 
     public void onClickRow(View view) {
@@ -47,6 +47,10 @@ public class RestaurantListAdapterViewModel extends BaseObservable {
 
     public String getStatus() {
         return mStatus;
+    }
+
+    public void setListener(RestaurantListAdapterViewModelListener listener) {
+        this.mListener = listener;
     }
 
     public interface RestaurantListAdapterViewModelListener {
