@@ -16,6 +16,10 @@ public class FavoriteRestaurant extends SugarRecord {
 
     public FavoriteRestaurant() {}
 
+    public FavoriteRestaurant(int id) {
+        this.restaurantId = id;
+    }
+
     public FavoriteRestaurant(String name, int id) {
         this.restaurantId = id;
         this.name = name;
