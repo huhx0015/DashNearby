@@ -4,7 +4,7 @@ package com.huhx0015.doordashchallenge.constants;
  * Created by Michael Yoon Huh on 6/1/2017.
  */
 
-public class RestaurantConstants {
+public class DashConstants {
 
     /** CLASS VARIABLES ________________________________________________________________________ **/
 

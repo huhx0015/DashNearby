@@ -4,7 +4,7 @@ import android.app.Application;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
+import com.huhx0015.doordashchallenge.constants.DashConstants;
 import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
@@ -36,7 +36,7 @@ public class NetworkModule {
     @Provides
     @Singleton
     Cache provideOkHttpCache(Application application) {
-        return new Cache(application.getCacheDir(), RestaurantConstants.HTTP_CLIENT_CACHE);
+        return new Cache(application.getCacheDir(), DashConstants.HTTP_CLIENT_CACHE);
     }
 
     @Provides

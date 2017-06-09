@@ -20,7 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import com.huhx0015.doordashchallenge.R;
-import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
+import com.huhx0015.doordashchallenge.constants.DashConstants;
 import com.huhx0015.doordashchallenge.databinding.ActivityMainBinding;
 import com.huhx0015.doordashchallenge.databinding.AppBarMainBinding;
 import com.huhx0015.doordashchallenge.databinding.ContentMainBinding;
@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ContentMainBinding mContentMainBinding;
 
     // LOCATION VARIABLES:
-    private double mLatitude = RestaurantConstants.DOORDASH_LAT;
-    private double mLongitude = RestaurantConstants.DOORDASH_LNG;
+    private double mLatitude = DashConstants.DOORDASH_LAT;
+    private double mLongitude = DashConstants.DOORDASH_LNG;
     private boolean mIsLocationPermissionsAsked = false;
 
     // LOGGING VARIABLES:
@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (savedInstanceState != null) {
             mFragmentTag = savedInstanceState.getString(INSTANCE_FRAGMENT_TAG);
-            mLatitude = savedInstanceState.getDouble(INSTANCE_LATITUDE, RestaurantConstants.DOORDASH_LAT);
-            mLongitude = savedInstanceState.getDouble(INSTANCE_LONGITUDE, RestaurantConstants.DOORDASH_LNG);
+            mLatitude = savedInstanceState.getDouble(INSTANCE_LATITUDE, DashConstants.DOORDASH_LAT);
+            mLongitude = savedInstanceState.getDouble(INSTANCE_LONGITUDE, DashConstants.DOORDASH_LNG);
             mIsLocationPermissionsAsked = savedInstanceState.getBoolean(INSTANCE_IS_LOCATION_PERMISSIONS_ASKED);
         }
 
@@ -124,13 +124,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.nav_discover:
-                if (!mFragmentTag.equals(RestaurantConstants.TAG_DISCOVER)) {
-                    loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, RestaurantConstants.TAG_DISCOVER), RestaurantConstants.TAG_DISCOVER);
+                if (!mFragmentTag.equals(DashConstants.TAG_DISCOVER)) {
+                    loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
                 }
                 break;
             case R.id.nav_favorites:
-                if (!mFragmentTag.equals(RestaurantConstants.TAG_FAVORITES)) {
-                    loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, RestaurantConstants.TAG_FAVORITES), RestaurantConstants.TAG_FAVORITES);
+                if (!mFragmentTag.equals(DashConstants.TAG_FAVORITES)) {
+                    loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_FAVORITES), DashConstants.TAG_FAVORITES);
                 }
                 break;
         }
@@ -193,9 +193,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private String getToolbarTitle() {
         switch (mFragmentTag != null ? mFragmentTag : "") {
-            case RestaurantConstants.TAG_DISCOVER:
+            case DashConstants.TAG_DISCOVER:
                 return getString(R.string.title_discover);
-            case RestaurantConstants.TAG_FAVORITES:
+            case DashConstants.TAG_FAVORITES:
                 return getString(R.string.title_favorites);
             default:
                 return getString(R.string.app_name);
@@ -221,12 +221,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void loadDefaultCoordinates(String message) {
         mIsLocationPermissionsAsked = true;
-        mLatitude = RestaurantConstants.DOORDASH_LAT;
-        mLongitude = RestaurantConstants.DOORDASH_LNG;
+        mLatitude = DashConstants.DOORDASH_LAT;
+        mLongitude = DashConstants.DOORDASH_LNG;
 
         SnackbarUtils.displaySnackbar(mActivityMainBinding.getRoot(), message,
                 Snackbar.LENGTH_SHORT, ContextCompat.getColor(this, R.color.colorAccent));
-        loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, RestaurantConstants.TAG_DISCOVER), RestaurantConstants.TAG_DISCOVER);
+        loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
     }
     
     /** SERVICE CONNECTION _____________________________________________________________________ **/
@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.mLongitude = lng;
 
         mContentMainViewModel.setProgressBarVisible(false);
-        loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, RestaurantConstants.TAG_DISCOVER), RestaurantConstants.TAG_DISCOVER);
+        loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
     }
 
     @Override

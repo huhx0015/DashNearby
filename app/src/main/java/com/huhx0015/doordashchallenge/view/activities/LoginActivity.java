@@ -13,8 +13,8 @@ import android.util.Log;
 import com.huhx0015.doordashchallenge.R;
 import com.huhx0015.doordashchallenge.data.DashPreferences;
 import com.huhx0015.doordashchallenge.api.RetrofitInterface;
-import com.huhx0015.doordashchallenge.application.RestaurantApplication;
-import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
+import com.huhx0015.doordashchallenge.application.DashApplication;
+import com.huhx0015.doordashchallenge.constants.DashConstants;
 import com.huhx0015.doordashchallenge.databinding.ActivityLoginBinding;
 import com.huhx0015.doordashchallenge.models.Login;
 import com.huhx0015.doordashchallenge.models.Token;
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((RestaurantApplication) getApplication()).getNetworkComponent().inject(this);
+        ((DashApplication) getApplication()).getNetworkComponent().inject(this);
 
         if (savedInstanceState != null) {
             this.mEmail = savedInstanceState.getString(INSTANCE_EMAIL);
@@ -164,9 +164,9 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
                         handleError(getString(R.string.login_error));
                     }
                 } else {
-                    if (response.code() == RestaurantConstants.HTTP_BAD_REQUEST) {
+                    if (response.code() == DashConstants.HTTP_BAD_REQUEST) {
                         handleError(getString(R.string.login_wrong_credentials));
-                    } else if (response.code() == RestaurantConstants.HTTP_FORBIDDEN) {
+                    } else if (response.code() == DashConstants.HTTP_FORBIDDEN) {
                         String previousToken = DashPreferences.getAuthToken(LoginActivity.this);
                         if (previousToken != null) {
                             refreshToken(previousToken);
@@ -188,7 +188,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
 
     private void getUserData(String token) {
         RetrofitInterface request = mRetrofit.create(RetrofitInterface.class);
-        Call<User> call = request.getUser(RestaurantConstants.TOKEN_ID + token);
+        Call<User> call = request.getUser(DashConstants.TOKEN_ID + token);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -201,7 +201,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
                         handleError(getString(R.string.login_error));
                     }
                 } else {
-                    if (response.code() == RestaurantConstants.HTTP_UNAUTHORIZED) {
+                    if (response.code() == DashConstants.HTTP_UNAUTHORIZED) {
                         String previousToken = DashPreferences.getAuthToken(LoginActivity.this);
                         if (previousToken != null) {
                             DashPreferences.setAuthToken(null, LoginActivity.this);
@@ -224,7 +224,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
 
     private void refreshToken(String token) {
         RetrofitInterface request = mRetrofit.create(RetrofitInterface.class);
-        Call<Token> call = request.refreshToken(RestaurantConstants.TOKEN_ID + token);
+        Call<Token> call = request.refreshToken(DashConstants.TOKEN_ID + token);
         call.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
@@ -238,7 +238,7 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityVie
                         handleError(getString(R.string.login_error));
                     }
                 } else {
-                    if (response.code() == RestaurantConstants.HTTP_BAD_REQUEST) {
+                    if (response.code() == DashConstants.HTTP_BAD_REQUEST) {
                         handleError(getString(R.string.login_wrong_credentials));
                     } else {
                         handleError(getString(R.string.login_error));

@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import com.huhx0015.doordashchallenge.R;
 import com.huhx0015.doordashchallenge.view.listeners.RestaurantListScrollListener;
 import com.huhx0015.doordashchallenge.api.RetrofitInterface;
-import com.huhx0015.doordashchallenge.application.RestaurantApplication;
-import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
+import com.huhx0015.doordashchallenge.application.DashApplication;
+import com.huhx0015.doordashchallenge.constants.DashConstants;
 import com.huhx0015.doordashchallenge.databinding.FragmentRestaurantListBinding;
 import com.huhx0015.doordashchallenge.entities.FavoriteRestaurant;
 import com.huhx0015.doordashchallenge.models.Restaurant;
@@ -92,7 +92,7 @@ public class RestaurantListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        ((RestaurantApplication) getActivity().getApplication()).getNetworkComponent().inject(this);
+        ((DashApplication) getActivity().getApplication()).getNetworkComponent().inject(this);
     }
 
     @Nullable
@@ -157,7 +157,7 @@ public class RestaurantListFragment extends Fragment {
     private void initRecyclerView() {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setItemPrefetchEnabled(true);
-        mLayoutManager.setInitialPrefetchItemCount(RestaurantConstants.RECYCLER_VIEW_PREFETCH);
+        mLayoutManager.setInitialPrefetchItemCount(DashConstants.RECYCLER_VIEW_PREFETCH);
 
         mBinding.fragmentRestaurantRecyclerView.setLayoutManager(mLayoutManager);
         mBinding.fragmentRestaurantRecyclerView.setHasFixedSize(true);
@@ -168,8 +168,8 @@ public class RestaurantListFragment extends Fragment {
         RestaurantListScrollListener mScrollListener = new RestaurantListScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int currentPage) {
-                if (!mTag.equals(RestaurantConstants.TAG_FAVORITES) && !mIsEndOfList) {
-                    queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
+                if (!mTag.equals(DashConstants.TAG_FAVORITES) && !mIsEndOfList) {
+                    queryRestaurantList(DashConstants.DOORDASH_LAT, DashConstants.DOORDASH_LNG,
                             currentPage * LIST_ITEM_LIMIT, LIST_ITEM_LIMIT);
                 }
             }
@@ -190,7 +190,7 @@ public class RestaurantListFragment extends Fragment {
 
     private void initList() {
         mIsEndOfList = false;
-        queryRestaurantList(RestaurantConstants.DOORDASH_LAT, RestaurantConstants.DOORDASH_LNG,
+        queryRestaurantList(DashConstants.DOORDASH_LAT, DashConstants.DOORDASH_LNG,
                 LIST_START_POSITION, LIST_ITEM_LIMIT);
     }
 
@@ -218,7 +218,7 @@ public class RestaurantListFragment extends Fragment {
             requestParams.put(QUERY_LAT, String.valueOf(lat));
             requestParams.put(QUERY_LNG, String.valueOf(lng));
         }
-        if (!mTag.equals(RestaurantConstants.TAG_FAVORITES) && offset != null && limit != null) {
+        if (!mTag.equals(DashConstants.TAG_FAVORITES) && offset != null && limit != null) {
             requestParams.put(QUERY_OFFSET, String.valueOf(offset));
             requestParams.put(QUERY_LIMIT, String.valueOf(limit));
         }
@@ -255,7 +255,7 @@ public class RestaurantListFragment extends Fragment {
                     }
 
                     // Filters the list if currently in "Favorites" view mode.
-                    if (mTag.equals(RestaurantConstants.TAG_FAVORITES)) {
+                    if (mTag.equals(DashConstants.TAG_FAVORITES)) {
                         filterList();
                     }
 
