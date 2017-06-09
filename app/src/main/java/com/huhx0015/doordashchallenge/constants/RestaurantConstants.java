@@ -13,5 +13,8 @@ public class RestaurantConstants {
     public static final double DOORDASH_LAT = 37.422740;
     public static final double DOORDASH_LNG = -122.139956;
 
+    public static final String TAG_DISCOVER = "TAG_DISCOVER";
+    public static final String TAG_FAVORITES = "TAG_FAVORITES";
+
     public static final int RECYCLER_VIEW_PREFETCH = 6;
 }

@@ -17,8 +17,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import com.huhx0015.doordashchallenge.R;
+import com.huhx0015.doordashchallenge.constants.RestaurantConstants;
 import com.huhx0015.doordashchallenge.databinding.ActivityMainBinding;
 import com.huhx0015.doordashchallenge.databinding.AppBarMainBinding;
 import com.huhx0015.doordashchallenge.databinding.ContentMainBinding;
@@ -38,59 +40,54 @@ import permissions.dispatcher.RuntimePermissions;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         LocationService.LocationServiceListener {
 
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    /** CLASS VARIABLES ________________________________________________________________________ **/
 
-    private static final String INSTANCE_FRAGMENT_TAG = LOG_TAG + "_INSTANCE_FRAGMENT_TAG";
-    private static final String INSTANCE_LATITUDE = LOG_TAG + "_INSTANCE_LATITUDE";
-    private static final String INSTANCE_LONGITUDE = LOG_TAG + "_INSTANCE_LONGITUDE";
-
-    private static final String TAG_DISCOVER = "TAG_DISCOVER";
-    private static final String TAG_FAVORITES = "TAG_FAVORITES";
-
-    private Double mLatitude;
-    private Double mLongitude;
-
-    private boolean mIsLocationPermissionsChecked = false;
-    private boolean mIsLocationPermissions = false;
-
+    // DATABINDING VARIABLES:
     private ActivityMainBinding mActivityMainBinding;
     private AppBarMainBinding mAppBarMainBinding;
     private ContentMainBinding mContentMainBinding;
 
+    // LOCATION VARIABLES:
+    private double mLatitude = RestaurantConstants.DOORDASH_LAT;
+    private double mLongitude = RestaurantConstants.DOORDASH_LNG;
+    private boolean mIsLocationPermissionsAsked = false;
+
+    // LOGGING VARIABLES:
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+
+    // INSTANCE VARIABLES:
+    private static final String INSTANCE_FRAGMENT_TAG = LOG_TAG + "_INSTANCE_FRAGMENT_TAG";
+    private static final String INSTANCE_LATITUDE = LOG_TAG + "_INSTANCE_LATITUDE";
+    private static final String INSTANCE_LONGITUDE = LOG_TAG + "_INSTANCE_LONGITUDE";
+    private static final String INSTANCE_IS_LOCATION_PERMISSIONS_ASKED = LOG_TAG + "_INSTANCE_IS_LOCATION_PERMISSIONS_ASKED";
+
+    // SERVICE VARIABLES:
+    private LocationService mLocationService;
+    private boolean mServiceBound = false;
+
+    // TAG VARIABLES:
     private String mFragmentTag;
 
-    private LocationService mLocationService;
-
-
+    /** ACTIVITY LIFECYCLE METHODS _____________________________________________________________ **/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initBinding();
+
         if (savedInstanceState != null) {
             mFragmentTag = savedInstanceState.getString(INSTANCE_FRAGMENT_TAG);
-            mLatitude = savedInstanceState.getDouble(INSTANCE_LATITUDE);
-            mLongitude = savedInstanceState.getDouble(INSTANCE_LONGITUDE);
+            mLatitude = savedInstanceState.getDouble(INSTANCE_LATITUDE, RestaurantConstants.DOORDASH_LAT);
+            mLongitude = savedInstanceState.getDouble(INSTANCE_LONGITUDE, RestaurantConstants.DOORDASH_LNG);
+            mIsLocationPermissionsAsked = savedInstanceState.getBoolean(INSTANCE_IS_LOCATION_PERMISSIONS_ASKED);
         }
 
-        initBinding();
         initView();
 
-        if (!mIsLocationPermissionsChecked) {
+        if (!mIsLocationPermissionsAsked) {
             initServices();
         }
-
-        //setToolbarTitle();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     @Override
@@ -100,20 +97,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mAppBarMainBinding.unbind();
         mActivityMainBinding.unbind();
 
-        unbindService(mServiceConnection);
+        if (mServiceBound) {
+            unbindService(mServiceConnection);
+        }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(INSTANCE_FRAGMENT_TAG, mFragmentTag);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
+    /** ACTIVITY EXTENSION METHODS _____________________________________________________________ **/
 
     @Override
     public void onBackPressed() {
@@ -131,22 +120,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.nav_discover:
-                if (!mFragmentTag.equals(TAG_DISCOVER)) {
-                    loadFragment(RestaurantListFragment.newInstance(TAG_DISCOVER), TAG_DISCOVER);
+                if (!mFragmentTag.equals(RestaurantConstants.TAG_DISCOVER)) {
+                    loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, RestaurantConstants.TAG_DISCOVER), RestaurantConstants.TAG_DISCOVER);
                 }
                 break;
             case R.id.nav_favorites:
-                if (!mFragmentTag.equals(TAG_FAVORITES)) {
-                    loadFragment(RestaurantListFragment.newInstance(TAG_FAVORITES), TAG_FAVORITES);
+                if (!mFragmentTag.equals(RestaurantConstants.TAG_FAVORITES)) {
+                    loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, RestaurantConstants.TAG_FAVORITES), RestaurantConstants.TAG_FAVORITES);
                 }
                 break;
         }
 
-        setToolbarTitle();
         mActivityMainBinding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+    
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(INSTANCE_FRAGMENT_TAG, mFragmentTag);
+        outState.putDouble(INSTANCE_LATITUDE, mLatitude);
+        outState.putDouble(INSTANCE_LONGITUDE, mLongitude);
+        outState.putBoolean(INSTANCE_IS_LOCATION_PERMISSIONS_ASKED, mIsLocationPermissionsAsked);
+    }
 
+    /** INIT METHODS ___________________________________________________________________________ **/
+    
     private void initBinding() {
         mActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mAppBarMainBinding = mActivityMainBinding.appBarMain;
@@ -157,15 +162,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initToolbar();
         initDrawer();
         initNavigationView();
-    }
-
-    private void initServices() {
-        MainActivityPermissionsDispatcher.initLocationServiceWithCheck(this);
-    }
-
-    private void initToolbar() {
-        mActivityMainBinding.appBarMain.toolbar.setTitle("");
-        setSupportActionBar(mActivityMainBinding.appBarMain.toolbar);
     }
 
     private void initDrawer() {
@@ -180,14 +176,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mActivityMainBinding.navView.setNavigationItemSelectedListener(this);
     }
 
-    private void setToolbarTitle() {
-        switch (mFragmentTag) {
-            case TAG_DISCOVER:
-                mAppBarMainBinding.toolbar.setTitle(R.string.title_discover);
-                break;
-            case TAG_FAVORITES:
-                mAppBarMainBinding.toolbar.setTitle(R.string.title_favorites);
-                break;
+    private void initToolbar() {
+        mAppBarMainBinding.toolbar.setTitle(getToolbarTitle());
+        setSupportActionBar(mActivityMainBinding.appBarMain.toolbar);
+    }
+
+    private void initServices() {
+        MainActivityPermissionsDispatcher.initLocationServiceWithCheck(this);
+    }
+
+    private String getToolbarTitle() {
+        switch (mFragmentTag != null ? mFragmentTag : "") {
+            case RestaurantConstants.TAG_DISCOVER:
+                return getString(R.string.title_discover);
+            case RestaurantConstants.TAG_FAVORITES:
+                return getString(R.string.title_favorites);
+            default:
+                return getString(R.string.app_name);
         }
     }
 
@@ -204,18 +209,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(mContentMainBinding.mainFragmentContainer.getId(), fragment);
         fragmentTransaction.commitAllowingStateLoss();
+
+        mAppBarMainBinding.toolbar.setTitle(getToolbarTitle());
     }
+
+    private void loadDefaultCoordinates(String message) {
+        mIsLocationPermissionsAsked = true;
+        mLatitude = RestaurantConstants.DOORDASH_LAT;
+        mLongitude = RestaurantConstants.DOORDASH_LNG;
+
+        SnackbarUtils.displaySnackbar(mActivityMainBinding.getRoot(), message,
+                Snackbar.LENGTH_SHORT, ContextCompat.getColor(this, R.color.colorAccent));
+        loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, RestaurantConstants.TAG_DISCOVER), RestaurantConstants.TAG_DISCOVER);
+    }
+    
+    /** SERVICE CONNECTION _____________________________________________________________________ **/
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(LOG_TAG, "onServiceConnected(): Service connected.");
+
             LocationService.LocationBinder binder = (LocationService.LocationBinder) service;
             mLocationService = binder.getService();
             mLocationService.setListener(MainActivity.this);
+            mLocationService.connect(true);
+            mServiceBound = true;
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName name) {}
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(LOG_TAG, "onServiceDisconnected(): Service disconnected.");
+            mServiceBound = false;
+        }
     };
 
     /** LOCATION SERVICE LISTENER METHODS ______________________________________________________ **/
@@ -231,43 +257,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.mLatitude = lat;
         this.mLongitude = lng;
 
-        loadFragment(RestaurantListFragment.newInstance(TAG_DISCOVER), TAG_DISCOVER);
+        loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, RestaurantConstants.TAG_DISCOVER), RestaurantConstants.TAG_DISCOVER);
     }
 
     @Override
     public void onLocationFailed() {
-        SnackbarUtils.displaySnackbar(mActivityMainBinding.getRoot(),
-                "Failed to get location update, using default coordinates.",
-                Snackbar.LENGTH_SHORT, ContextCompat.getColor(this, R.color.colorAccent));
+        loadDefaultCoordinates(getString(R.string.location_update_failed));
     }
 
     /** PERMISSIONS METHODS ____________________________________________________________________ **/
 
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     protected void initLocationService() {
+        Log.d(LOG_TAG, "initLocationServices(): Starting location services...");
+
+        mIsLocationPermissionsAsked = true;
+
         Intent intent = new Intent(this, LocationService.class);
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
     @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
     void handleDeniedLocationPermissions() {
-        mIsLocationPermissionsChecked = true;
-
-        SnackbarUtils.displaySnackbar(mActivityMainBinding.getRoot(),
-                "Failed to get location update, using default coordinates.",
-                Snackbar.LENGTH_SHORT, ContextCompat.getColor(this, R.color.colorAccent));
-
-        loadFragment(RestaurantListFragment.newInstance(TAG_DISCOVER), TAG_DISCOVER);
+        loadDefaultCoordinates(getString(R.string.location_permissions_denied));
     }
 
     @OnNeverAskAgain(Manifest.permission.ACCESS_FINE_LOCATION)
     void handleNeverAskAgainLocationPermissions() {
-        mIsLocationPermissionsChecked = true;
-
-        SnackbarUtils.displaySnackbar(mActivityMainBinding.getRoot(),
-                "Failed to get location update, using default coordinates.",
-                Snackbar.LENGTH_SHORT, ContextCompat.getColor(this, R.color.colorAccent));
-
-        loadFragment(RestaurantListFragment.newInstance(TAG_DISCOVER), TAG_DISCOVER);
+        loadDefaultCoordinates(getString(R.string.location_permissions_unavailable));
     }
 }
