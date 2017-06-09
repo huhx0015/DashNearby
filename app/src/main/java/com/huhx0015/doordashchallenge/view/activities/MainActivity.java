@@ -25,6 +25,7 @@ import com.huhx0015.doordashchallenge.databinding.ActivityMainBinding;
 import com.huhx0015.doordashchallenge.databinding.AppBarMainBinding;
 import com.huhx0015.doordashchallenge.databinding.ContentMainBinding;
 import com.huhx0015.doordashchallenge.services.LocationService;
+import com.huhx0015.doordashchallenge.utils.LocationUtils;
 import com.huhx0015.doordashchallenge.utils.SnackbarUtils;
 import com.huhx0015.doordashchallenge.view.fragments.RestaurantListFragment;
 import com.huhx0015.doordashchallenge.viewmodels.ContentMainViewModel;
@@ -277,13 +278,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     protected void initLocationService() {
-        mContentMainViewModel.setProgressBarVisible(true);
-        mIsLocationPermissionsAsked = true;
+        if (LocationUtils.isLocationEnabled(this)) {
+            mContentMainViewModel.setProgressBarVisible(true);
+            mIsLocationPermissionsAsked = true;
 
-        Intent intent = new Intent(this, LocationService.class);
-        bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
+            Intent intent = new Intent(this, LocationService.class);
+            bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
 
-        Log.d(LOG_TAG, "initLocationServices(): Starting location services...");
+            Log.d(LOG_TAG, "initLocationServices(): Starting location services...");
+        } else {
+            loadDefaultCoordinates(getString(R.string.location_disabled));
+        }
     }
 
     @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
