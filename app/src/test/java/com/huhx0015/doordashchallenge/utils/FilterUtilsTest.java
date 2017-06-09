@@ -13,6 +13,8 @@ import static org.junit.Assert.assertEquals;
 
 public class FilterUtilsTest {
 
+    /** TEST METHODS ___________________________________________________________________________ **/
+
     @Test
     public void testFilterRestaurantList() throws Exception {
         List<Restaurant> testRestaurantList = new ArrayList<>();

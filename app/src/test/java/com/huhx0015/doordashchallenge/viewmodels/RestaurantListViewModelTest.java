@@ -15,14 +15,20 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class RestaurantListViewModelTest {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     @Mock
     private RestaurantListViewModel mViewModel;
+
+    /** SETUP METHODS __________________________________________________________________________ **/
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mViewModel = new RestaurantListViewModel();
     }
+
+    /** TEST METHODS ___________________________________________________________________________ **/
 
     @Test
     public void testSetRestaurantListVisibility() throws Exception {

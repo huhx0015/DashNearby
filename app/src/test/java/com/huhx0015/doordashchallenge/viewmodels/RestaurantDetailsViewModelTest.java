@@ -15,6 +15,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class RestaurantDetailsViewModelTest {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     private static final String TEST_IMAGE_URL = "http://www.test.com/test.jpg";
     private static final String TEST_TAGS = "Chinese, Korean";
     private static final String TEST_STATUS = "30 minutes";
@@ -23,11 +25,15 @@ public class RestaurantDetailsViewModelTest {
     @Mock
     private RestaurantDetailsViewModel mViewModel;
 
+    /** SETUP METHODS __________________________________________________________________________ **/
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mViewModel = new RestaurantDetailsViewModel();
     }
+
+    /** TEST METHODS ___________________________________________________________________________ **/
 
     @Test
     public void testSetRestaurantDetailsVisibility() throws Exception {
