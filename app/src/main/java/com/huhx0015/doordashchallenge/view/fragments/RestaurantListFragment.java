@@ -41,7 +41,11 @@ public class RestaurantListFragment extends Fragment {
 
     private static final String INSTANCE_RESTAURANT_LIST = LOG_TAG + "_INSTANCE_RESTAURANT_LIST";
     private static final String INSTANCE_TAG = LOG_TAG + "_INSTANCE_TAG";
-    private static final String TAG_FAVORITES = "TAG_FAVORITES";
+    private static final String INSTANCE_LATITUDE = LOG_TAG + "_INSTANCE_LATITUDE";
+    private static final String INSTANCE_LONGITUDE = LOG_TAG + "_INSTANCE_LONGITUDE";
+
+    private double mLatitude;
+    private double mLongitude;
 
     private FragmentRestaurantListBinding mBinding;
     private List<Restaurant> mRestaurantList;
@@ -51,8 +55,10 @@ public class RestaurantListFragment extends Fragment {
     @Inject
     Retrofit mRetrofit;
 
-    public static RestaurantListFragment newInstance(String tag) {
+    public static RestaurantListFragment newInstance(double lat, double lng, String tag) {
         RestaurantListFragment fragment = new RestaurantListFragment();
+        fragment.mLatitude = lat;
+        fragment.mLongitude = lng;
         fragment.mTag = tag;
         return fragment;
     }
@@ -67,11 +73,14 @@ public class RestaurantListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         initBinding();
         initView();
 
         if (savedInstanceState != null) {
             mTag = savedInstanceState.getString(INSTANCE_TAG);
+            mLatitude = savedInstanceState.getDouble(INSTANCE_LATITUDE);
+            mLongitude = savedInstanceState.getDouble(INSTANCE_LONGITUDE);
             mRestaurantList = savedInstanceState.getParcelableArrayList(INSTANCE_RESTAURANT_LIST);
 
             if (mRestaurantList != null && mRestaurantList.size() > 0) {
@@ -96,6 +105,8 @@ public class RestaurantListFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(INSTANCE_TAG, mTag);
+        outState.putDouble(INSTANCE_LATITUDE, mLatitude);
+        outState.putDouble(INSTANCE_LONGITUDE, mLongitude);
         if (mRestaurantList != null) {
             outState.putParcelableArrayList(INSTANCE_RESTAURANT_LIST, new ArrayList<>(mRestaurantList));
         }
@@ -143,8 +154,8 @@ public class RestaurantListFragment extends Fragment {
     private void queryRestaurantList() {
         RetrofitInterface restaurantListRequest = mRetrofit.create(RetrofitInterface.class);
         Call<List<Restaurant>> call = restaurantListRequest.getRestaurantList(
-                String.valueOf(RestaurantConstants.DOORDASH_LAT),
-                String.valueOf(RestaurantConstants.DOORDASH_LNG));
+                String.valueOf(mLatitude),
+                String.valueOf(mLongitude));
 
         mViewModel.setProgressBarVisible(true);
         call.enqueue(new Callback<List<Restaurant>>() {
@@ -153,7 +164,7 @@ public class RestaurantListFragment extends Fragment {
                 mViewModel.setProgressBarVisible(false);
                 mRestaurantList = response.body();
 
-                if (mTag.equals(TAG_FAVORITES)) {
+                if (mTag.equals(RestaurantConstants.TAG_FAVORITES)) {
                     filterList();
                 }
 

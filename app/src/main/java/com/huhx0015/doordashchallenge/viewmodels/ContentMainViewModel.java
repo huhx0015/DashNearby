@@ -7,4 +7,15 @@ import android.databinding.BaseObservable;
  */
 
 public class ContentMainViewModel extends BaseObservable {
+
+    private boolean mProgressBarVisibility = false;
+
+    public boolean getProgressBarVisible() {
+        return mProgressBarVisibility;
+    }
+
+    public void setProgressBarVisible(boolean visible) {
+        this.mProgressBarVisibility = visible;
+        notifyChange();
+    }
 }
