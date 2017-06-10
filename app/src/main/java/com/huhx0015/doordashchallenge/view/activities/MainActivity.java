@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initBinding();
 
         if (savedInstanceState != null) {
-            mFragmentTag = savedInstanceState.getString(INSTANCE_FRAGMENT_TAG);
+            mFragmentTag = savedInstanceState.getString(INSTANCE_FRAGMENT_TAG, null);
             mLatitude = savedInstanceState.getDouble(INSTANCE_LATITUDE, DashConstants.DOORDASH_LAT);
             mLongitude = savedInstanceState.getDouble(INSTANCE_LONGITUDE, DashConstants.DOORDASH_LNG);
             mIsLocationPermissionsAsked = savedInstanceState.getBoolean(INSTANCE_IS_LOCATION_PERMISSIONS_ASKED);
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initView();
 
-        if (!mIsLocationPermissionsAsked) {
+        if (!mIsLocationPermissionsAsked || mFragmentTag == null) {
             initServices();
         }
     }
@@ -165,9 +165,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(INSTANCE_FRAGMENT_TAG, mFragmentTag);
         outState.putBoolean(INSTANCE_IS_LOCATION_PERMISSIONS_ASKED, mIsLocationPermissionsAsked);
 
+        if (mFragmentTag != null) {
+            outState.putString(INSTANCE_FRAGMENT_TAG, mFragmentTag);
+        }
         if (mLatitude != null) {
             outState.putDouble(INSTANCE_LATITUDE, mLatitude);
         }
@@ -255,9 +257,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void checkCoordindatesReady() {
-        if (mLatitude != null && mLongitude != null && mContentMainViewModel.getProgressBarVisible()) {
-            mContentMainViewModel.setProgressBarVisible(false);
-            loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
+        if (mFragmentTag == null) {
+            if (mLatitude != null && mLongitude != null && mContentMainViewModel.getProgressBarVisible()) {
+                mContentMainViewModel.setProgressBarVisible(false);
+                loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
+            } else {
+                mContentMainViewModel.setProgressBarVisible(true);
+            }
         }
     }
     
