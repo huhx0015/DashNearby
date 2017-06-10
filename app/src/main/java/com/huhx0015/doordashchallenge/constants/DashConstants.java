@@ -15,6 +15,7 @@ public class DashConstants {
     public static final int HTTP_UNAUTHORIZED = 401;
     public static final int HTTP_FORBIDDEN = 403;
 
+    // API VARIABLES:
     public static final String TOKEN_ID = "JWT ";
 
     // LOCATION VARIABLES:

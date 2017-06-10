@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
+    // ACTIVITY VARIABLES:
+    private boolean mIsActivityPaused = false;
+
     // DATABINDING VARIABLES:
     private ActivityMainBinding mActivityMainBinding;
     private AppBarMainBinding mAppBarMainBinding;
@@ -51,8 +54,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ContentMainViewModel mContentMainViewModel;
 
     // LOCATION VARIABLES:
-    private double mLatitude = DashConstants.DOORDASH_LAT;
-    private double mLongitude = DashConstants.DOORDASH_LNG;
+    private Double mLatitude;
+    private Double mLongitude;
     private boolean mIsLocationPermissionsAsked = false;
 
     // LOGGING VARIABLES:
@@ -91,6 +94,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!mIsLocationPermissionsAsked) {
             initServices();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mIsActivityPaused = false;
+        checkCoordindatesReady();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mIsActivityPaused = true;
     }
 
     @Override
@@ -150,9 +166,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(INSTANCE_FRAGMENT_TAG, mFragmentTag);
-        outState.putDouble(INSTANCE_LATITUDE, mLatitude);
-        outState.putDouble(INSTANCE_LONGITUDE, mLongitude);
         outState.putBoolean(INSTANCE_IS_LOCATION_PERMISSIONS_ASKED, mIsLocationPermissionsAsked);
+
+        if (mLatitude != null) {
+            outState.putDouble(INSTANCE_LATITUDE, mLatitude);
+        }
+        if (mLongitude != null) {
+            outState.putDouble(INSTANCE_LONGITUDE, mLongitude);
+        }
     }
 
     /** INIT METHODS ___________________________________________________________________________ **/
@@ -225,9 +246,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mLatitude = DashConstants.DOORDASH_LAT;
         mLongitude = DashConstants.DOORDASH_LNG;
 
-        SnackbarUtils.displaySnackbar(mActivityMainBinding.getRoot(), message,
-                Snackbar.LENGTH_SHORT, ContextCompat.getColor(this, R.color.colorAccent));
-        loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
+        if (!mIsActivityPaused) {
+            mContentMainViewModel.setProgressBarVisible(false);
+            SnackbarUtils.displaySnackbar(mActivityMainBinding.getRoot(), message,
+                    Snackbar.LENGTH_SHORT, ContextCompat.getColor(this, R.color.colorAccent));
+            loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
+        }
+    }
+
+    private void checkCoordindatesReady() {
+        if (mLatitude != null && mLongitude != null && mContentMainViewModel.getProgressBarVisible()) {
+            mContentMainViewModel.setProgressBarVisible(false);
+            loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
+        }
     }
     
     /** SERVICE CONNECTION _____________________________________________________________________ **/
@@ -264,13 +295,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.mLatitude = lat;
         this.mLongitude = lng;
 
-        mContentMainViewModel.setProgressBarVisible(false);
-        loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
+        if (!mIsActivityPaused) {
+            mContentMainViewModel.setProgressBarVisible(false);
+            loadFragment(RestaurantListFragment.newInstance(mLatitude, mLongitude, DashConstants.TAG_DISCOVER), DashConstants.TAG_DISCOVER);
+        }
     }
 
     @Override
     public void onLocationFailed() {
-        mContentMainViewModel.setProgressBarVisible(false);
         loadDefaultCoordinates(getString(R.string.location_update_failed));
     }
 
