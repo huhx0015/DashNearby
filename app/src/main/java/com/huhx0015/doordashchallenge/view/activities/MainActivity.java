@@ -117,7 +117,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mActivityMainBinding.unbind();
 
         if (mServiceBound) {
+            mLocationService.setListener(null);
             unbindService(mServiceConnection);
+            mServiceBound = false;
         }
     }
 

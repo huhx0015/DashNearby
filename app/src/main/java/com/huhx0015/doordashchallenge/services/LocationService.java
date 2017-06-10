@@ -88,10 +88,10 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                             mLocationRequest, this);
                     startIntervalThread();
                 }
-            } else {
+            } else if (mListener != null) {
                 mListener.onLocationFailed();
             }
-        } else {
+        } else if (mListener != null) {
             mListener.onLocationPermissionsRequested();
         }
     }
@@ -102,8 +102,10 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
         Log.d(LOG_TAG, "updateLocation(): Latitude: " +latitiude + " | Longitude: " + longitude);
 
-        mIsLocationFound = true;
-        mListener.onLocationUpdated(location.getLatitude(), location.getLongitude());
+        if (mListener != null) {
+            mIsLocationFound = true;
+            mListener.onLocationUpdated(location.getLatitude(), location.getLongitude());
+        }
     }
 
     /** GOOGLE API CLIENT METHODS ______________________________________________________________ **/
@@ -120,9 +122,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             initGoogleClient();
         }
 
-        if (isConnect) {
+        if (isConnect && !mGoogleApiClient.isConnected()) {
             mGoogleApiClient.connect();
-        } else {
+        } else if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
     }
@@ -139,7 +141,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private Runnable mThread = new Runnable() {
         @Override
         public void run() {
-            if (!mIsLocationFound) {
+            if (!mIsLocationFound && mListener != null) {
                 mListener.onLocationFailed();
             }
         }
@@ -167,8 +169,11 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(LOG_TAG, "onConnectionFailed(): Google API client connection suspended.");
-        mIsLocationFound = true;
-        mListener.onLocationFailed();
+
+        if (mListener != null) {
+            mIsLocationFound = true;
+            mListener.onLocationFailed();
+        }
     }
 
     /** LOCATION LISTENER METHODS ______________________________________________________________ **/
@@ -177,7 +182,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onLocationChanged(Location location) {
         if (location != null) {
             updateLocation(location);
-        } else {
+        } else if (mListener != null) {
             mListener.onLocationFailed();
         }
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);

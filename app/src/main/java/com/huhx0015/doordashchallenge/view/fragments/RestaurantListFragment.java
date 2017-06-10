@@ -208,7 +208,7 @@ public class RestaurantListFragment extends Fragment implements RestaurantListAd
 
     private void setRecyclerView() {
         mViewModel.setRestaurantListVisible(true);
-        mAdapter = new RestaurantListAdapter(mRestaurantList, this, getContext());
+        mAdapter = new RestaurantListAdapter(mRestaurantList, this);
         mAdapter.setHasStableIds(true);
         mBinding.fragmentRestaurantRecyclerView.setAdapter(mAdapter);
     }

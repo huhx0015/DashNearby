@@ -22,17 +22,14 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
-    private Context mContext;
     private List<Restaurant> mRestaurantList;
     private RestaurantListAdapterListener mListener;
 
     /** CONSTRUCTOR METHODS ____________________________________________________________________ **/
 
-    public RestaurantListAdapter(List<Restaurant> restaurant, RestaurantListAdapterListener listener,
-                                 Context context) {
+    public RestaurantListAdapter(List<Restaurant> restaurant, RestaurantListAdapterListener listener) {
         this.mRestaurantList = restaurant;
         this.mListener = listener;
-        this.mContext = context;
     }
 
     /** ADAPTER METHODS ________________________________________________________________________ **/
